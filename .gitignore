@@ -14,9 +14,20 @@ out
 .idea
 
 # gradle
-build
-.gradle
+build/*
+.gradle/*
+gradle/*
 
 # other
 eclipse
 run
+CREDITS-fml.txt
+forge-1.8.9-11.15.0.1694-changelog.txt
+gradlew
+gradlew.bat
+LICENSE-fml.txt
+MinecraftForge-Credits.txt
+MinecraftForge-License.txt
+Paulscode IBXM Library License.txt
+Paulscode SoundSystem CodecIBXM License.txt
+README.txt
