@@ -1,0 +1,16 @@
+[
+{
+  "modid": "triggers",
+  "name": "Triggers Mod",
+  "description": "Wireless Redstone Triggers.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Ratismal"],
+  "credits": "McJty, and everyone at #hysteriaunleashed",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

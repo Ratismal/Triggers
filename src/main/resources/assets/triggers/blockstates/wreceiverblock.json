@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "triggers:wreceiverblock",
+    "textures": {
+      "all": "triggers:blocks/wreceiverblock"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "visible": {
+      "true": {},
+      "false": {
+        "textures": {
+          "all": "triggers:blocks/blank"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "triggers:blocks/blocktexture",
+    "down": "triggers:blocks/blocktexture",
+    "up": "triggers:blocks/blocktexture",
+    "east": "triggers:blocks/blocktexture",
+    "west": "triggers:blocks/blocktexture",
+    "north": "triggers:blocks/datablocktexture",
+    "south": "triggers:blocks/blocktexture"
+  }
+}
