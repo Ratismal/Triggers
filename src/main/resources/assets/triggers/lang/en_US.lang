@@ -1,5 +1,8 @@
 # Blocks
+block.blockwemitter.name=Wireless Redstone Emitter
+block.blockdata.name=Test Block
 
 #Items
 item.eyetransient.name=Transient Eye
-item.cameratinker.name=Tinkering Camera
+item.cameratinker.name=Camcorder
+item.picksubtle.name=Subtle Pickaxe
