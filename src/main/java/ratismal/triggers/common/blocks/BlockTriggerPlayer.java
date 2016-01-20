@@ -50,9 +50,9 @@ public class BlockTriggerPlayer extends BaseBlockTrigger implements ITileEntityP
     public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
         super.addCollisionBoxesToList(worldIn, pos, state, mask, list, collidingEntity);
         TileTriggerPlayer te = (TileTriggerPlayer) WorldHelper.getTileEntity(worldIn, pos);
-        TriggersMod.logger.info("Meow");
+        //TriggersMod.logger.info("Meow");
         if (!te.isNoCol() && collidingEntity instanceof EntityPlayer) {
-            TriggersMod.logger.info("Meow2");
+            //TriggersMod.logger.info("Meow2");
             te.updatePlayerIsInMe();
         }
     }
@@ -64,7 +64,7 @@ public class BlockTriggerPlayer extends BaseBlockTrigger implements ITileEntityP
                 NBTTagCompound tagCompound = playerIn.getHeldItem().getTagCompound();
                 int mode = tagCompound.getInteger("mode");
                 if (mode == 0) {
-                    TriggersMod.logger.info("Opening gui");
+                    //TriggersMod.logger.info("Opening gui");
                     playerIn.openGui(TriggersMod.instance, RefGui.WIRELESS_RECEIVER, worldIn, pos.getX(), pos.getY(), pos.getZ());
                 }
             }

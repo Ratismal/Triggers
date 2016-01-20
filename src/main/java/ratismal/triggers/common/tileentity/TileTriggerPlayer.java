@@ -40,7 +40,7 @@ public class TileTriggerPlayer extends TileTrigger implements ITickable {
 
     public void updatePlayerIsInMe() {
         if (!playerIsInMe) {
-            TriggersMod.logger.debug("Block> THERE'S SOMETHING INSIDE ME THERE'S SOMETHING INSIDE ME OH GOD GET IT OUT");
+            //TriggersMod.logger.debug("Block> THERE'S SOMETHING INSIDE ME THERE'S SOMETHING INSIDE ME OH GOD GET IT OUT");
             setPlayerIsInMe(true);
         }
         counter++;

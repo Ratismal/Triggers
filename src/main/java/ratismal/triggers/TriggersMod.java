@@ -1,6 +1,8 @@
 package ratismal.triggers;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import ratismal.triggers.client.GuiHandler;
 import ratismal.triggers.common.init.ModBlocks;
 import ratismal.triggers.common.init.ModItems;
@@ -12,6 +14,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
+import ratismal.triggers.common.network.PacketHandler;
 
 /**
  * Created by Ratismal on 2016-01-11.
@@ -49,10 +52,19 @@ public class TriggersMod {
     }
 
     public static class CommonProxy {
+
+        /**
+         * Returns a side-appropriate EntityPlayer for use during message handling
+         */
+        public EntityPlayer getPlayerEntity(MessageContext ctx) {
+            return ctx.getServerHandler().playerEntity;
+        }
+
         public void preInit(FMLPreInitializationEvent e) {
             // Initialization of blocks and items typically goes here:
             ModBlocks.init();
             ModItems.init();
+            PacketHandler.init();
         }
 
         public void init(FMLInitializationEvent e) {
@@ -69,6 +81,16 @@ public class TriggersMod {
 
         public static EntityPlayer getThePlayer() {
             return FMLClientHandler.instance().getClientPlayerEntity();
+        }
+
+        @Override
+        public EntityPlayer getPlayerEntity(MessageContext ctx) {
+            // Note that if you simply return 'Minecraft.getMinecraft().thePlayer',
+            // your packets will not work because you will be getting a client
+            // player even when you are on the server! Sounds absurd, but it's true.
+
+            // Solution is to double-check side before returning the player:
+            return (ctx.side.isClient() ? Minecraft.getMinecraft().thePlayer : super.getPlayerEntity(ctx));
         }
 
         @Override
@@ -92,6 +114,8 @@ public class TriggersMod {
     }
 
     public static class ServerProxy extends CommonProxy {
+
+
 
     }
 }

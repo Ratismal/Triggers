@@ -16,18 +16,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Created by Ratismal on 2016-01-13.
  */
 
-public class TileSemiEthereal extends TileEntity implements ITickable {
+public class TileSemiEthereal extends BaseTile implements ITickable {
 
     int timeCount = 0;
     int delayLength = 20;
 
     @Override
     public void update() {
+        super.update();
         if (timeCount >= delayLength) {
             //worldObj.getBlockState(pos).getBlock().notify();
             //if (worldObj.isRemote) {
                 worldObj.markBlockForUpdate(pos);
-                worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
             //}
             //worldObj.notify();
             timeCount = 0;

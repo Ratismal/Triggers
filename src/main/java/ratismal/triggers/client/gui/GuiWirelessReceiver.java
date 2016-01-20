@@ -1,19 +1,18 @@
 package ratismal.triggers.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiPageButtonList;
-import net.minecraft.client.gui.GuiSlider;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import ratismal.triggers.common.container.ContainerEmpty;
+import ratismal.triggers.common.network.PacketHandler;
+import ratismal.triggers.common.network.messages.MessageChannelRedstone;
+import ratismal.triggers.common.network.messages.MessageTriggerPlayer;
 import ratismal.triggers.common.tileentity.TileTrigger;
-import ratismal.triggers.common.tileentity.TileWirelessReceiver;
 
 import java.io.IOException;
 
@@ -22,6 +21,15 @@ import java.io.IOException;
  */
 
 public class GuiWirelessReceiver extends GuiContainer {
+
+    final int X_SIZE = 160;
+    final int Y_SIZE = 64;
+    final int ID_BUTTON_FLAG = 543;
+    final int ID_BUTTON_NAME = 544;
+    final int ID_TEXT_FLAG = 545;
+    final int ID_TEXT_NAME = 546;
+    final int BUTTON_HEIGHT = 16;
+    final int BUTTON_WIDTH = 52;
 
     final ResourceLocation background = new ResourceLocation("triggers:textures/gui/triggerplayer.png");
     TileTrigger te;
@@ -32,8 +40,8 @@ public class GuiWirelessReceiver extends GuiContainer {
     public GuiWirelessReceiver(EntityPlayer player, World world, int x, int y, int z) {
         super(new ContainerEmpty(player, world, x, y, z));
 
-        this.xSize = 160;
-        this.ySize = 64;
+        this.xSize = X_SIZE;
+        this.ySize = Y_SIZE;
         this.te = (TileTrigger) world.getTileEntity(new BlockPos(x, y, z));
     }
 
@@ -41,15 +49,15 @@ public class GuiWirelessReceiver extends GuiContainer {
     public void initGui() {
         super.initGui();
 
-        this.buttonList.add(new GuiButton(543, guiLeft + 84, guiTop + 13, 52, 18, "Set Flag"));
-        this.buttonList.add(new GuiButton(544, guiLeft + 84, guiTop + 40, 52, 18, "Set Name"));
+        this.buttonList.add(new GuiButton(ID_BUTTON_FLAG, guiLeft + 84, guiTop + 13, BUTTON_WIDTH, BUTTON_HEIGHT + 2, "Set Flag"));
+        this.buttonList.add(new GuiButton(ID_BUTTON_NAME, guiLeft + 84, guiTop + 40, BUTTON_WIDTH, BUTTON_HEIGHT + 2, "Set Name"));
 
-        textFlag = new GuiTextField(545, fontRendererObj, guiLeft + 25, guiTop + 14, 52, 16);
+        textFlag = new GuiTextField(ID_TEXT_FLAG, fontRendererObj, guiLeft + 25, guiTop + 14, BUTTON_WIDTH, BUTTON_HEIGHT);
         textFlag.setFocused(false);
         textFlag.setMaxStringLength(4);
         textFlag.setText(String.valueOf(te.getFlag()));
 
-        textName = new GuiTextField(546, fontRendererObj, guiLeft + 25, guiTop + 41, 52, 16);
+        textName = new GuiTextField(ID_TEXT_NAME, fontRendererObj, guiLeft + 25, guiTop + 41, BUTTON_WIDTH, BUTTON_HEIGHT);
         textName.setFocused(false);
         textName.setMaxStringLength(8);
         if (te.getChannelName() != null) {
@@ -122,18 +130,24 @@ public class GuiWirelessReceiver extends GuiContainer {
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
 
-        if (button.id == 543)
+        if (button.id == ID_BUTTON_FLAG)
         {
             int flag = Integer.parseInt(textFlag.getText());
             //int flag = Integer.getInteger(textFlag.getText());
-            te.setFlag(flag);
+            PacketHandler.INSTANCE.sendToServer(new MessageTriggerPlayer(flag, te.getPos()));
             if (te.getChannelName() != null) {
                 textName.setText(te.getChannelName());
             }
+            else {
+                textName.setText("");
+            }
         }
-        else if (button.id == 544)
+        else if (button.id == ID_BUTTON_NAME)
         {
-            te.setChannelName(textName.getText());
+            int flag = Integer.parseInt(textFlag.getText());
+            //te.setChannelName(textName.getText());
+            PacketHandler.INSTANCE.sendToServer(new MessageChannelRedstone(textName.getText(), flag, te.getPos()));
+
         }
     }
 }

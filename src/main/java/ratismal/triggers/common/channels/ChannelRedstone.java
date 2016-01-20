@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
+import ratismal.triggers.TriggersMod;
 
 import java.util.*;
 
@@ -24,6 +25,12 @@ public class ChannelRedstone extends WorldSavedData {
 
     public ChannelRedstone(String name) {
         super(name);
+    }
+
+    public void save(World world) {
+        world.getMapStorage().setData(IDENTIFIER, this);
+        markDirty();
+        TriggersMod.logger.info("Saved redstone channels");
     }
 
     public RedstoneChannel getChannelState(int key) {
@@ -71,16 +78,23 @@ public class ChannelRedstone extends WorldSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
+        TriggersMod.logger.info("reading channels to nbt");
         redstoneChannels.clear();
         NBTTagList channels = nbt.getTagList("channels", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < channels.tagCount(); i++) {
             NBTTagCompound miniCompound = new NBTTagCompound();
             RedstoneChannel rc;
             int flag = miniCompound.getInteger("flag");
+            TriggersMod.logger.info(flag + "");
+
             int power = miniCompound.getInteger("power");
+            TriggersMod.logger.info(power + "");
+
             if (miniCompound.hasKey("name")) {
                 String name = miniCompound.getString("name");
                 rc = new RedstoneChannel(power, name);
+                TriggersMod.logger.info(name);
+
             } else {
                 rc = new RedstoneChannel(power);
             }
@@ -90,16 +104,24 @@ public class ChannelRedstone extends WorldSavedData {
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
+        TriggersMod.logger.info("Writing channels to nbt");
         NBTTagList channels = new NBTTagList();
         for (Map.Entry<Integer, RedstoneChannel> entry : redstoneChannels.entrySet()) {
             NBTTagCompound miniCompound = new NBTTagCompound();
             miniCompound.setInteger("flag", entry.getKey());
+            TriggersMod.logger.info(entry.getKey() + "");
+
             miniCompound.setInteger("power", entry.getValue().getPower());
-            if (entry.getValue().hasName())
+            TriggersMod.logger.info(entry.getValue().getPower() + "");
+
+            if (entry.getValue().hasName()) {
                 miniCompound.setString("name", entry.getValue().getName());
+                TriggersMod.logger.info(entry.getValue().getName() + "");
+            }
             channels.appendTag(miniCompound);
         }
-        nbt.setTag("flags", channels);
+        nbt.setTag("channels", channels);
+
     }
 
     public static class RedstoneChannel {

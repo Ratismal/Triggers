@@ -2,6 +2,9 @@ package ratismal.triggers.common.tileentity;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ITickable;
 import ratismal.triggers.TriggersMod;
@@ -18,6 +21,7 @@ import java.util.List;
 public class TileTrigger extends TileSemiEthereal {
 
     public int flag = 0;
+    private int prevPower = 0;
 
     public NBTTagCompound oldCompound;
 
@@ -33,7 +37,7 @@ public class TileTrigger extends TileSemiEthereal {
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
         tag.setInteger("flag", flag);
-        TriggersMod.logger.info("Setting nbt flag to " + flag);
+        //TriggersMod.logger.info("Setting nbt flag to " + flag);
         oldCompound = tag;
     }
 
@@ -47,22 +51,43 @@ public class TileTrigger extends TileSemiEthereal {
     }
 
     public void setChannelName(String name) {
-        ChannelRedstone.get(getWorld()).setChannelName(flag, name);
+        ChannelRedstone channelRedstone = ChannelRedstone.get(getWorld());
+        channelRedstone.setChannelName(flag, name);
+        channelRedstone.save(getWorld());
     }
 
     public void setPowerLevel(int power) {
-        ChannelRedstone.get(getWorld()).setChannelState(flag, power);
+        ChannelRedstone channelRedstone = ChannelRedstone.get(getWorld());
+        channelRedstone.setChannelState(flag, power);
+        channelRedstone.save(getWorld());
 
 //        worldObj.markBlockForUpdate(pos);
 
-    //    TriggersMod.logger.info("Notifying neighbors of power change.");
-  //      worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+        //    TriggersMod.logger.info("Notifying neighbors of power change.");
+        //      worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
     }
 
     public void setFlag(int flag) {
         TriggersMod.logger.info("Setting int flag to " + flag);
         this.flag = flag;
         markDirty();
+        worldObj.markBlockForUpdate(getPos());
+    }
+
+    @Override
+    public void update() {
+        super.update();
+    }
+
+    @Override
+    protected void checkStateServer() {
+        super.checkStateServer();
+        if (getPowerLevel() != prevPower) {
+            worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+            prevPower = getPowerLevel();
+            ChannelRedstone.get(worldObj).save(worldObj);
+        }
+        //ChannelRedstone.get(worldObj).
     }
 
     public int getFlag() {
@@ -73,7 +98,22 @@ public class TileTrigger extends TileSemiEthereal {
         return oldCompound;
     }
 
+    @Override
+    public Packet getDescriptionPacket() {
+        // Prepare a packet for syncing our TE to the client. Since we only have to sync the stack
+        // and that's all we have we just write our entire NBT here. If you have a complex
+        // tile entity that doesn't need to have all information on the client you can write
+        // a more optimal NBT here.
+        NBTTagCompound nbtTag = new NBTTagCompound();
+        this.writeToNBT(nbtTag);
+        return new S35PacketUpdateTileEntity(getPos(), 1, nbtTag);
+    }
 
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        // Here we get the packet from the server and read it into our client side tile entity
+        this.readFromNBT(packet.getNbtCompound());
+    }
 
     /*
     //List of coords to power
