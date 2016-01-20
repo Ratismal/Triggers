@@ -8,6 +8,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+import ratismal.triggers.TriggersMod;
 import ratismal.triggers.common.container.ContainerEmpty;
 import ratismal.triggers.common.network.PacketHandler;
 import ratismal.triggers.common.network.messages.MessageChannelRedstone;
@@ -136,6 +137,7 @@ public class GuiWirelessReceiver extends GuiContainer {
             //int flag = Integer.getInteger(textFlag.getText());
             PacketHandler.INSTANCE.sendToServer(new MessageTriggerPlayer(flag, te.getPos()));
             if (te.getChannelName() != null) {
+                TriggersMod.logger.info(te.getChannelName());
                 textName.setText(te.getChannelName());
             }
             else {

@@ -46,7 +46,8 @@ public class TileTrigger extends TileSemiEthereal {
     }
 
     public String getChannelName() {
-        ChannelRedstone.RedstoneChannel rc = ChannelRedstone.get(getWorld()).getChannelState(flag);
+        ChannelRedstone channelRedstone = ChannelRedstone.get(getWorld());
+        ChannelRedstone.RedstoneChannel rc = channelRedstone.getChannelState(flag);
         return rc.hasName() ? rc.getName() : null;
     }
 

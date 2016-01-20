@@ -17,6 +17,8 @@ public class ChannelRedstone extends WorldSavedData {
 
     public static final String IDENTIFIER = "TriggersRedstoneChannels";
 
+    private static ChannelRedstone instance;
+
     public static Map<Integer, RedstoneChannel> redstoneChannels = new HashMap<Integer, RedstoneChannel>();
 
     public ChannelRedstone() {
@@ -68,12 +70,16 @@ public class ChannelRedstone extends WorldSavedData {
     }
 
     public static ChannelRedstone get(World world) {
-        ChannelRedstone data = (ChannelRedstone) world.loadItemData(ChannelRedstone.class, IDENTIFIER);
-        if (data == null) {
-            data = new ChannelRedstone();
-            world.setItemData(IDENTIFIER, data);
+        if (instance != null) {
+            return instance;
         }
-        return data;
+        instance = (ChannelRedstone) world.getPerWorldStorage().loadData(ChannelRedstone.class, IDENTIFIER);
+        //ChannelRedstone data = (ChannelRedstone) world.loadItemData(ChannelRedstone.class, IDENTIFIER);
+        if (instance == null) {
+            instance = new ChannelRedstone();
+            world.setItemData(IDENTIFIER, instance);
+        }
+        return instance;
     }
 
     @Override
