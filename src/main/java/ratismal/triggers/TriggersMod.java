@@ -1,5 +1,7 @@
 package ratismal.triggers;
 
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import ratismal.triggers.client.GuiHandler;
 import ratismal.triggers.common.init.ModBlocks;
 import ratismal.triggers.common.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,6 +35,7 @@ public class TriggersMod {
     public void preInit(FMLPreInitializationEvent event){
         logger = event.getModLog();
         proxy.preInit(event);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     }
 
     @Mod.EventHandler

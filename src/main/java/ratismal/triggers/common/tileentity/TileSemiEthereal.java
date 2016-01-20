@@ -1,5 +1,6 @@
 package ratismal.triggers.common.tileentity;
 
+import net.minecraft.util.ITickable;
 import ratismal.triggers.TriggersMod;
 import ratismal.triggers.common.items.ItemEyeTransient;
 import net.minecraft.entity.Entity;
@@ -15,18 +16,27 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Created by Ratismal on 2016-01-13.
  */
 
-public class TileSemiEthereal extends TileEntity /* implements ITickable */ {
+public class TileSemiEthereal extends TileEntity implements ITickable {
 
-    public enum Property {
-        VISIBLE,
-        SOLID,
+    int timeCount = 0;
+    int delayLength = 20;
+
+    @Override
+    public void update() {
+        if (timeCount >= delayLength) {
+            //worldObj.getBlockState(pos).getBlock().notify();
+            //if (worldObj.isRemote) {
+                worldObj.markBlockForUpdate(pos);
+                worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+            //}
+            //worldObj.notify();
+            timeCount = 0;
+        }
+
+        timeCount++;
     }
 
-
-    @SideOnly(Side.CLIENT)
-    public float visibility;
-
-    public boolean is(Property what, EntityPlayer player) {
+    public boolean is(EntityPlayer player) {
         //if (what == Property.SOLID) return true;
 
         ItemStack helmet = player.inventory.armorItemInSlot(3);
@@ -36,13 +46,13 @@ public class TileSemiEthereal extends TileEntity /* implements ITickable */ {
         Item item = helmet.getItem();
 
         if (item instanceof ItemEyeTransient) {
-            return ((ItemEyeTransient) item).checkBlock(what, helmet, this);
+            return ((ItemEyeTransient) item).checkBlock(helmet, this);
         }
 
         return false;
     }
 
-    public boolean isNoCol(Property what, EntityPlayer player) {
+    public boolean isNoCol(EntityPlayer player) {
         //if (what == Property.SOLID) return true;
 
         ItemStack helmet = player.inventory.armorItemInSlot(3);
@@ -58,18 +68,18 @@ public class TileSemiEthereal extends TileEntity /* implements ITickable */ {
         return false;
     }
 
-    public boolean is(Property what, Entity e) {
-        return (e instanceof EntityPlayer) && is(what, (EntityPlayer) e);
+    public boolean is(Entity e) {
+        return (e instanceof EntityPlayer) && is((EntityPlayer) e);
     }
 
-    public boolean is(Property what) {
+    public boolean is() {
         EntityPlayer player = TriggersMod.ClientProxy.getThePlayer();
-        return player != null && is(what, player);
+        return player != null && is(player);
     }
 
-    public boolean isNoCol(Property what) {
+    public boolean isNoCol() {
         EntityPlayer player = TriggersMod.ClientProxy.getThePlayer();
-        return player != null && isNoCol(what, player);
+        return player != null && isNoCol(player);
     }
 
     @Override

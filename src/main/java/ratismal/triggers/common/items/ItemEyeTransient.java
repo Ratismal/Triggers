@@ -79,7 +79,7 @@ public class ItemEyeTransient extends ItemArmor {
         return tagCompound;
     }
 
-    public boolean checkBlock(TileSemiEthereal.Property property, ItemStack stack, TileSemiEthereal te) {
+    public boolean checkBlock(ItemStack stack, TileSemiEthereal te) {
         return getTagCompoundSafe(stack).getBoolean("active");
     }
 

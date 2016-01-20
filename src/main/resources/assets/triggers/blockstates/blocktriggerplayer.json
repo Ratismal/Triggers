@@ -3,7 +3,7 @@
   "defaults": {
     "model": "triggers:basictrigger",
     "textures": {
-      "all": "triggers:blocks/wemitter"
+      "all": "triggers:blocks/triggerplayer"
     }
   },
   "variants": {

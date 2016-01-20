@@ -27,6 +27,7 @@ import java.util.List;
  */
 
 public class ItemCameraTinker extends Item {
+
     public ItemCameraTinker() {
         setRegistryName("cameratinker");
         setUnlocalizedName("cameratinker");
@@ -117,6 +118,7 @@ public class ItemCameraTinker extends Item {
                     linkCompound.setBoolean("linking", true);
                 } else {
                     if (linkCompound.getBoolean("linking")) {
+                        /*
                         TileTrigger tileTrigger = (TileTrigger) worldIn.getTileEntity(new BlockPos(
                                 linkCompound.getInteger("targetX"),
                                 linkCompound.getInteger("targetY"),
@@ -124,6 +126,7 @@ public class ItemCameraTinker extends Item {
                         tileTrigger.addTarget(pos);
                         ChatHelper.sendMessageToPlayer(playerIn, "Block linked.");
                         tileTrigger.markDirty();
+                        */
                     } else {
                         ChatHelper.sendMessageToPlayer(playerIn, "You must select a trigger block first.");
                     }

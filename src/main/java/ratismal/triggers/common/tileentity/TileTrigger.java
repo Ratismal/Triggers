@@ -3,6 +3,9 @@ package ratismal.triggers.common.tileentity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ITickable;
+import ratismal.triggers.TriggersMod;
+import ratismal.triggers.common.channels.ChannelRedstone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,65 @@ import java.util.List;
 
 public class TileTrigger extends TileSemiEthereal {
 
+    public int flag = 0;
+
+    public NBTTagCompound oldCompound;
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        flag = tag.getInteger("flag");
+
+        oldCompound = tag;
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        tag.setInteger("flag", flag);
+        TriggersMod.logger.info("Setting nbt flag to " + flag);
+        oldCompound = tag;
+    }
+
+    public int getPowerLevel() {
+        return ChannelRedstone.get(getWorld()).getChannelState(flag).getPower();
+    }
+
+    public String getChannelName() {
+        ChannelRedstone.RedstoneChannel rc = ChannelRedstone.get(getWorld()).getChannelState(flag);
+        return rc.hasName() ? rc.getName() : null;
+    }
+
+    public void setChannelName(String name) {
+        ChannelRedstone.get(getWorld()).setChannelName(flag, name);
+    }
+
+    public void setPowerLevel(int power) {
+        ChannelRedstone.get(getWorld()).setChannelState(flag, power);
+
+//        worldObj.markBlockForUpdate(pos);
+
+    //    TriggersMod.logger.info("Notifying neighbors of power change.");
+  //      worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+    }
+
+    public void setFlag(int flag) {
+        TriggersMod.logger.info("Setting int flag to " + flag);
+        this.flag = flag;
+        markDirty();
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public NBTTagCompound getTagCompound() {
+        return oldCompound;
+    }
+
+
+
+    /*
     //List of coords to power
     public List<BlockPos> coordsList = new ArrayList<BlockPos>();
 
@@ -82,5 +144,5 @@ public class TileTrigger extends TileSemiEthereal {
 
         }
     }
-
+*/
 }

@@ -24,10 +24,10 @@ public class BlockData extends BaseBlock implements ITileEntityProvider {
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockData() {
-        super(RefBlocks.blockData);
-        GameRegistry.registerBlock(this, RefBlocks.blockData);
+        super(RefBlocks.BLOCK_DATA);
+        GameRegistry.registerBlock(this, RefBlocks.BLOCK_DATA);
 
-        GameRegistry.registerTileEntity(TileData.class, RefBlocks.blockData);
+        GameRegistry.registerTileEntity(TileData.class, RefBlocks.BLOCK_DATA);
     }
 
     @SideOnly(Side.CLIENT)

@@ -86,7 +86,7 @@ public class BaseBlockSemiEthereal extends BaseBlock {
     @Override
     public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos) {
         TileSemiEthereal te = getTileEntity(worldIn, pos);
-        if (te != null && te.isNoCol(TileSemiEthereal.Property.SOLID)) {
+        if (te != null && te.isNoCol()) {
             //TriggersMod.logger.info("meow");
             return super.getSelectedBoundingBox(worldIn, pos);
             //return AxisAlignedBB.getAABBPool().getAABB((double)par2, (double)par3, (double)par4, (double)par2, (double)par3, (double)par4);
@@ -100,7 +100,7 @@ public class BaseBlockSemiEthereal extends BaseBlock {
         //AxisAlignedBB axisalignedbb = this.getCollisionBoundingBox(worldIn, pos, state);
         TileSemiEthereal te = getTileEntity(worldIn, pos);
         //toggleTexture(worldIn, pos, state);
-        if (te != null && te.is(TileSemiEthereal.Property.SOLID, collidingEntity)) {
+        if (te != null && te.is(collidingEntity)) {
             AxisAlignedBB aabb = AxisAlignedBB.fromBounds(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
             if (aabb != null && aabb.intersectsWith(mask)) list.add(aabb);
             // TriggersMod.logger.info("Adding collision box");
