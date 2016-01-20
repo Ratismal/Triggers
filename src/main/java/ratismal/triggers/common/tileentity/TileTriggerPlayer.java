@@ -10,6 +10,14 @@ import ratismal.triggers.TriggersMod;
 
 public class TileTriggerPlayer extends TileTrigger implements ITickable {
 
+    final int MAX_POWER_LEVEL = 15;
+    final int MAX_COUNTER = 511;
+    final int MIN_POWER_LEVEL = 0;
+    final int DELAY_LENGTH = 20;
+
+    int counter = 0;
+    int oldCounter = 0;
+
     boolean playerIsInMe = false;
 
     @Override
@@ -30,30 +38,26 @@ public class TileTriggerPlayer extends TileTrigger implements ITickable {
         playerIsInMe = ewGrossGetItOut;
     }
 
-    int counter = 0;
-    int oldCounter = 0;
-
     public void updatePlayerIsInMe() {
         if (!playerIsInMe) {
             TriggersMod.logger.debug("Block> THERE'S SOMETHING INSIDE ME THERE'S SOMETHING INSIDE ME OH GOD GET IT OUT");
             setPlayerIsInMe(true);
         }
         counter++;
-        if (counter >= 511) {
+        if (counter >= MAX_COUNTER) {
             counter = 0;
         }
     }
 
     int timeCount = 0;
-    int delayLength = 20;
 
     @Override
     public void update() {
         if (playerIsInMe) {
-            if (timeCount >= delayLength) {
+            if (timeCount >= DELAY_LENGTH) {
                 if (oldCounter != counter) {
                     oldCounter = counter;
-                    if (getPowerLevel() != 15) {
+                    if (getPowerLevel() != MAX_POWER_LEVEL) {
                         //TriggersMod.logger.info("Block> MY POWER LEVEL IS OVER 14!");
                         setPowerLevel(15);
                     }
