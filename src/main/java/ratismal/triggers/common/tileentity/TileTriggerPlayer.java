@@ -59,7 +59,7 @@ public class TileTriggerPlayer extends TileTrigger implements ITickable {
                     oldCounter = counter;
                     if (getPowerLevel() != MAX_POWER_LEVEL) {
                         //TriggersMod.logger.info("Block> MY POWER LEVEL IS OVER 14!");
-                        setPowerLevel(15);
+                        setPowerLevel(MAX_POWER_LEVEL);
                     }
                 } else {
                     //TriggersMod.logger.info("Block> Oh good, the gross thing isn't in my anymore.");
