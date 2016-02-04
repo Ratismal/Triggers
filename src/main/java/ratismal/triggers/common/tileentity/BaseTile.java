@@ -18,6 +18,16 @@ public class BaseTile extends TileEntity implements ITickable {
             checkStateServer();
     }
 
+    protected void notifyBlockUpdate() {
+        //int oldMeta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+        //int newMeta = updateMetaData(oldMeta);
+        //if (oldMeta != newMeta) {
+        //    worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, newMeta, 2);
+        //}
+        worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
+        worldObj.markBlockForUpdate(pos);
+    }
+
     protected void checkStateClient() {
 
     }

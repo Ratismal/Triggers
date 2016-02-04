@@ -2,6 +2,7 @@ package ratismal.triggers.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiBeacon;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
@@ -21,7 +22,7 @@ import java.io.IOException;
  * Created by Ratismal on 2016-01-15.
  */
 
-public class GuiWirelessReceiver extends GuiContainer {
+public class GuiTriggerItem extends GuiContainer {
 
     final int X_SIZE = 224;
     final int Y_SIZE = 96;
@@ -41,9 +42,8 @@ public class GuiWirelessReceiver extends GuiContainer {
     GuiTextField textFlag;
     GuiTextField textName;
 
-    public GuiWirelessReceiver(EntityPlayer player, World world, int x, int y, int z) {
+    public GuiTriggerItem(EntityPlayer player, World world, int x, int y, int z) {
         super(new ContainerEmpty(player, world, x, y, z));
-
         this.xSize = X_SIZE;
         this.ySize = Y_SIZE;
         this.te = (TileTrigger) world.getTileEntity(new BlockPos(x, y, z));
@@ -55,7 +55,7 @@ public class GuiWirelessReceiver extends GuiContainer {
 
         this.buttonList.add(new GuiButton(ID_BUTTON_FLAG, guiLeft + 96, guiTop + 22, BUTTON_WIDTH, BUTTON_HEIGHT, "Set Flag"));
         this.buttonList.add(new GuiButton(ID_BUTTON_NAME, guiLeft + 96, guiTop + 53, BUTTON_WIDTH, BUTTON_HEIGHT, "Set Name"));
-
+        //this.buttonList.add(new GuiBut)
         textFlag = new GuiTextField(ID_TEXT_FLAG, fontRendererObj, guiLeft + 10, guiTop + 23, TEXT_WIDTH, TEXT_HEIGHT);
         textFlag.setFocused(false);
         textFlag.setMaxStringLength(4);

@@ -7,5 +7,6 @@ package ratismal.triggers.common.ref;
 public class RefGui {
 
     public static final int WIRELESS_RECEIVER = 0;
+    public static final int PROXIMITY_TRIGGER = 1;
 
 }

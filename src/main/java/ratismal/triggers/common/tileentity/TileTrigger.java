@@ -21,7 +21,6 @@ import java.util.List;
 public class TileTrigger extends TileSemiEthereal {
 
     public int flag = 0;
-    private int prevPower = 0;
 
     public NBTTagCompound oldCompound;
 
@@ -69,7 +68,7 @@ public class TileTrigger extends TileSemiEthereal {
     }
 
     public void setFlag(int flag) {
-        TriggersMod.logger.info("Setting int flag to " + flag);
+        //TriggersMod.logger.info("Setting int flag to " + flag);
         this.flag = flag;
         markDirty();
         worldObj.markBlockForUpdate(getPos());
@@ -80,16 +79,7 @@ public class TileTrigger extends TileSemiEthereal {
         super.update();
     }
 
-    @Override
-    protected void checkStateServer() {
-        super.checkStateServer();
-        if (getPowerLevel() != prevPower) {
-            worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
-            prevPower = getPowerLevel();
-            ChannelRedstone.get(worldObj).save(worldObj);
-        }
-        //ChannelRedstone.get(worldObj).
-    }
+
 
     public int getFlag() {
         return flag;

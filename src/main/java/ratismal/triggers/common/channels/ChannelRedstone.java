@@ -2,10 +2,13 @@ package ratismal.triggers.common.channels;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import ratismal.triggers.TriggersMod;
+import ratismal.triggers.common.tileentity.TileEmitter;
 
 import java.util.*;
 
@@ -20,6 +23,7 @@ public class ChannelRedstone extends WorldSavedData {
     private static ChannelRedstone instance;
 
     public static Map<Integer, RedstoneChannel> redstoneChannels = new HashMap<Integer, RedstoneChannel>();
+    public static TreeMap<BlockPos, Integer> transmitters = new TreeMap<BlockPos, Integer>();
 
     public ChannelRedstone() {
         super(IDENTIFIER);
@@ -32,7 +36,7 @@ public class ChannelRedstone extends WorldSavedData {
     public void save(World world) {
         world.getMapStorage().setData(IDENTIFIER, this);
         markDirty();
-        TriggersMod.logger.info("Saved redstone channels");
+        //TriggersMod.logger.info("Saved redstone channels");
     }
 
     public RedstoneChannel getChannelState(int key) {
@@ -54,6 +58,30 @@ public class ChannelRedstone extends WorldSavedData {
 
         redstoneChannels.put(key, rc);
         markDirty();
+    }
+
+    public void update(int flag, World world) {
+       // TriggersMod.logger.info("We're doing a fancy update in ChannelRedstone");
+        boolean active = false;
+        for (Map.Entry<BlockPos, Integer> entry : transmitters.entrySet()) {
+         //   TriggersMod.logger.info(entry.getKey().getX() + " " + entry.getKey().getY() + " " + entry.getKey().getZ() + " : " + entry.getValue());
+            if (entry.getValue() == flag) {
+                TileEntity tile = world.getTileEntity(entry.getKey());
+                if (tile instanceof TileEmitter) {
+                    TileEmitter tileEmitter = (TileEmitter) tile;
+                    if (tileEmitter.isActive()) {
+              //          TriggersMod.logger.info("We're going to emit");
+                        active = true;
+                    }
+                }
+            }
+        }
+
+        if (active) {
+            setChannelState(flag, 15);
+        } else {
+            setChannelState(flag, 0);
+        }
     }
 
     public void setChannelName(int key, String name) {
@@ -84,22 +112,22 @@ public class ChannelRedstone extends WorldSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        TriggersMod.logger.info("reading channels to nbt");
+        //TriggersMod.logger.info("reading channels to nbt");
         redstoneChannels.clear();
         NBTTagList channels = nbt.getTagList("channels", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < channels.tagCount(); i++) {
-            NBTTagCompound miniCompound = new NBTTagCompound();
+            NBTTagCompound miniCompound = channels.getCompoundTagAt(i);
             RedstoneChannel rc;
             int flag = miniCompound.getInteger("flag");
-            TriggersMod.logger.info(flag + "");
+        //    TriggersMod.logger.info(flag + "");
 
             int power = miniCompound.getInteger("power");
-            TriggersMod.logger.info(power + "");
+            //TriggersMod.logger.info(power + "");
 
             if (miniCompound.hasKey("name")) {
                 String name = miniCompound.getString("name");
                 rc = new RedstoneChannel(power, name);
-                TriggersMod.logger.info(name);
+              //  TriggersMod.logger.info(name);
 
             } else {
                 rc = new RedstoneChannel(power);
@@ -110,24 +138,23 @@ public class ChannelRedstone extends WorldSavedData {
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        TriggersMod.logger.info("Writing channels to nbt");
+        //TriggersMod.logger.info("Writing channels to nbt");
         NBTTagList channels = new NBTTagList();
         for (Map.Entry<Integer, RedstoneChannel> entry : redstoneChannels.entrySet()) {
             NBTTagCompound miniCompound = new NBTTagCompound();
             miniCompound.setInteger("flag", entry.getKey());
-            TriggersMod.logger.info(entry.getKey() + "");
+            //TriggersMod.logger.info(entry.getKey() + "");
 
             miniCompound.setInteger("power", entry.getValue().getPower());
-            TriggersMod.logger.info(entry.getValue().getPower() + "");
+            //TriggersMod.logger.info(entry.getValue().getPower() + "");
 
             if (entry.getValue().hasName()) {
                 miniCompound.setString("name", entry.getValue().getName());
-                TriggersMod.logger.info(entry.getValue().getName() + "");
+                //TriggersMod.logger.info(entry.getValue().getName() + "");
             }
             channels.appendTag(miniCompound);
         }
         nbt.setTag("channels", channels);
-
     }
 
     public static class RedstoneChannel {

@@ -1,5 +1,6 @@
 package ratismal.triggers.common.tileentity;
 
+import net.minecraft.init.Blocks;
 import ratismal.triggers.TriggersMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
@@ -15,7 +16,7 @@ import java.util.*;
  * Created by Ratismal on 2016-01-13.
  */
 
-public class TileWirelessEmitter extends TileTrigger {
+public class TileWirelessEmitter extends TileEmitter {
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -26,5 +27,7 @@ public class TileWirelessEmitter extends TileTrigger {
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
     }
+
+
 
 }

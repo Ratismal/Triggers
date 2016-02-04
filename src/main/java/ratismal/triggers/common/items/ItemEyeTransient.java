@@ -87,9 +87,9 @@ public class ItemEyeTransient extends ItemArmor {
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
         if (getTagCompoundSafe(stack).getBoolean("active"))
-            list.add("Mode: Solid");
+            list.add("Mode: Bypass");
         else
-            list.add("Mode: Pass Through");
+            list.add("Mode: Normal");
     }
 
 }

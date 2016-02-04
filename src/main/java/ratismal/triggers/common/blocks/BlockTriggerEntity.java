@@ -1,10 +1,13 @@
 package ratismal.triggers.common.blocks;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.EntityDropParticleFX;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,20 +30,19 @@ import ratismal.triggers.common.utils.WorldHelper;
 import java.util.List;
 
 /**
- * Created by Ratismal on 2016-01-15.
+ * Created by Ratismal on 2016-02-01.
  */
 
-public class BlockTriggerPlayer extends BlockEmitter implements ITileEntityProvider {
+public class BlockTriggerEntity extends BlockEmitter implements ITileEntityProvider {
 
-    int triggerMode;
-
-    public BlockTriggerPlayer() {
-        super(RefBlocks.BLOCK_TRIGGER_PLAYER);
-        GameRegistry.registerTileEntity(TileTriggerEntity.class, RefBlocks.BLOCK_TRIGGER_PLAYER);
+    public BlockTriggerEntity() {
+        super(RefBlocks.BLOCK_TRIGGER_ENTITY);
+        GameRegistry.registerTileEntity(TileTriggerEntity.class, RefBlocks.BLOCK_TRIGGER_ENTITY);
     }
 
     @SideOnly(Side.CLIENT)
     public void initModel() {
+        //Block;
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 
@@ -54,10 +56,16 @@ public class BlockTriggerPlayer extends BlockEmitter implements ITileEntityProvi
         super.addCollisionBoxesToList(worldIn, pos, state, mask, list, collidingEntity);
         TileTriggerEntity te = (TileTriggerEntity) WorldHelper.getTileEntity(worldIn, pos);
         //TriggersMod.logger.info("Meow");
-        if (!te.is() && collidingEntity instanceof EntityPlayer && !worldIn.isRemote) {
+        if (!te.is() && !worldIn.isRemote) {
             //TriggersMod.logger.info("Meow2");
             te.updateEntityIsInMe();
         }
     }
 
+    @Override
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, Entity entityIn) {
+        super.onEntityCollidedWithBlock(worldIn, pos, entityIn);
+        //BlockLiquid
+        TriggersMod.logger.info("Collision detected");
+    }
 }

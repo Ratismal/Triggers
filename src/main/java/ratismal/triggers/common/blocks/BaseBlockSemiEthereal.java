@@ -65,7 +65,8 @@ public class BaseBlockSemiEthereal extends BaseBlock {
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileSemiEthereal te = (TileSemiEthereal) worldIn.getTileEntity(pos);
-        if (TriggersMod.ClientProxy.getThePlayer().inventory.armorItemInSlot(3) != null &&
+        if (TriggersMod.ClientProxy.getThePlayer() != null &&
+                TriggersMod.ClientProxy.getThePlayer().inventory.armorItemInSlot(3) != null &&
                  TriggersMod.ClientProxy.getThePlayer().inventory.armorItemInSlot(3).getItem() instanceof ItemEyeTransient) {
             //worldIn.setBlockState(pos, state.withProperty(BaseBlockSemiEthereal.VISIBLE, visible), 2);
             return state.withProperty(VISIBLE, true);
@@ -98,8 +99,9 @@ public class BaseBlockSemiEthereal extends BaseBlock {
     @Override
     public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
         //AxisAlignedBB axisalignedbb = this.getCollisionBoundingBox(worldIn, pos, state);
-        TileSemiEthereal te = getTileEntity(worldIn, pos);
-        //toggleTexture(worldIn, pos, state);
+       // TileSemiEthereal te = getTileEntity(worldIn, pos);
+       // toggleTexture(worldIn, pos, state);
+        /*
         if (te != null && te.is(collidingEntity)) {
             AxisAlignedBB aabb = AxisAlignedBB.fromBounds(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
             if (aabb != null && aabb.intersectsWith(mask)) list.add(aabb);
@@ -107,8 +109,10 @@ public class BaseBlockSemiEthereal extends BaseBlock {
             //list.add(mask);
             //toggleTexture(worldIn, pos, state, true);
         }
+        */
         //toggleTexture(worldIn, pos, state, false);
     }
+
 
     public TileSemiEthereal getTileEntity(World world, BlockPos pos) {
         //  TriggersMod.logger.info("Getting tile entity");
