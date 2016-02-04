@@ -51,10 +51,10 @@ public class TileCreativeJammer extends TileSemiEthereal implements ITickable {
                                 message = "The creative mode is a lie.";
                                 break;
                             case 4:
-                                message = "Whoops! Something happened.";
+                                message = "This is not the mode you are looking for.";
                                 break;
                             case 5:
-                                message = player.getName() + " is not in the creative file. This incident will be reported.";
+                                message = player.getName() + " is not in the creativers file. This incident will be reported.";
                                 break;
                             default:
                                 message = "You are not allowed to enter creative mode.";
