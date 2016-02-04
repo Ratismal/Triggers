@@ -66,7 +66,7 @@ public class ItemCameraTinker extends Item {
         if (playerIn.isSneaking()) {
             int mode = tagCompound.getInteger("mode");
             mode++;
-            if (mode >= 3) {
+            if (mode >= 2) {
                 mode = 0;
             }
             tagCompound.setInteger("mode", mode);
@@ -74,10 +74,10 @@ public class ItemCameraTinker extends Item {
                 case 0:
                     ChatHelper.sendMessageToPlayer(playerIn, "Mode: Edit");
                     break;
+              //  case 2:
+                 //   ChatHelper.sendMessageToPlayer(playerIn, "Mode: Link");
+               //     break;
                 case 1:
-                    ChatHelper.sendMessageToPlayer(playerIn, "Mode: Link");
-                    break;
-                case 2:
                     ChatHelper.sendMessageToPlayer(playerIn, "Mode: Copy");
                     break;
                 default:
@@ -85,11 +85,11 @@ public class ItemCameraTinker extends Item {
                     break;
             }
         } else {
-            if (tagCompound.getInteger("mode") == 1) {
+            if (tagCompound.getInteger("mode") == 3) {
                 NBTTagCompound linkCompound = tagCompound.getCompoundTag("link");
                 linkCompound.setBoolean("linking", false);
                 ChatHelper.sendMessageToPlayer(playerIn, "Clearing link target data");
-            } else if (tagCompound.getInteger("mode") == 2) {
+            } else if (tagCompound.getInteger("mode") == 1) {
                 NBTTagCompound copyCompound = tagCompound.getCompoundTag("copy");
                 copyCompound.setBoolean("copying", false);
                 ChatHelper.sendMessageToPlayer(playerIn, "Clearing copied data");
@@ -104,11 +104,12 @@ public class ItemCameraTinker extends Item {
         initItem(stack);
 
         NBTTagCompound tagCompound = stack.getTagCompound();
+     //   TriggersMod.logger.info(tagCompound.getInteger("mode"));
 
         switch (tagCompound.getInteger("mode")) {
             case 0:
                 break;
-            case 1:
+            case 2:
                 NBTTagCompound linkCompound = tagCompound.getCompoundTag("link");
 
                 if (worldIn.getBlockState(pos).getBlock() instanceof BaseBlockTrigger) {
@@ -132,18 +133,27 @@ public class ItemCameraTinker extends Item {
                     }
                 }
                 break;
-            case 2:
+            case 1:
+             //   ChatHelper.sendMessageToPlayer(playerIn, "Doing a copy thing");
+           //     TriggersMod.logger.info("Copying");
+
                 NBTTagCompound copyCompound = tagCompound.getCompoundTag("copy");
                     if (worldIn.getBlockState(pos).getBlock() instanceof BaseBlockTrigger) {
                         if (copyCompound.getBoolean("copying")) {
-
+                            TileTrigger tt = (TileTrigger) worldIn.getTileEntity(pos);
+                            NBTTagCompound tempCompound = tt.getTagCompound();
+                            tempCompound.setInteger("flag", copyCompound.getCompoundTag("backup").getInteger("flag"));
+                            tt.writeToNBT(tempCompound);
+                            tt.setFlag(copyCompound.getCompoundTag("backup").getInteger("flag"));
+                           // tt.markDirty();
+                            ChatHelper.sendMessageToPlayer(playerIn, "Data loaded");
                         } else {
                             TriggersMod.logger.info("Copying");
-
                             TileTrigger tileTrigger = (TileTrigger) worldIn.getTileEntity(pos);
                             copyCompound.setTag("backup", tileTrigger.getTagCompound());
                             copyCompound.setString("blockname", worldIn.getBlockState(pos).getBlock().getRegistryName());
                             copyCompound.setBoolean("copying", true);
+                            ChatHelper.sendMessageToPlayer(playerIn, "Data copied");
                         }
                     }
                 break;
@@ -162,10 +172,10 @@ public class ItemCameraTinker extends Item {
             case 0:
                 list.add("Mode: Edit");
                 break;
-            case 1:
+            case 2:
                 list.add("Mode: Link");
                 break;
-            case 2:
+            case 1:
                 list.add("Mode: Copy");
                 break;
             default:

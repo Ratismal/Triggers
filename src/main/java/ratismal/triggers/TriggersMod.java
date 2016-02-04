@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import ratismal.triggers.client.GuiHandler;
+import ratismal.triggers.common.handler.ConfigHandler;
 import ratismal.triggers.common.init.ModBlocks;
 import ratismal.triggers.common.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,6 +62,7 @@ public class TriggersMod {
         }
 
         public void preInit(FMLPreInitializationEvent e) {
+            ConfigHandler.init(e.getSuggestedConfigurationFile());
             // Initialization of blocks and items typically goes here:
             ModBlocks.init();
             ModItems.init();

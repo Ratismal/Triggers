@@ -8,17 +8,15 @@ import ratismal.triggers.TriggersMod;
  * Created by Ratismal on 2016-01-15.
  */
 
-public class TileTriggerPlayer extends TileTrigger implements ITickable {
+public class TileTriggerEntity extends TileEmitter implements ITickable {
 
-    final int MAX_POWER_LEVEL = 15;
-    final int MAX_COUNTER = 511;
-    final int MIN_POWER_LEVEL = 0;
-    final int DELAY_LENGTH = 20;
+    final int MAX_COUNTER = 2048;
+    final int DELAY_LENGTH = 2;
 
     int counter = 0;
     int oldCounter = 0;
 
-    boolean playerIsInMe = false;
+    boolean entityIsInMe = false;
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -30,46 +28,60 @@ public class TileTriggerPlayer extends TileTrigger implements ITickable {
         super.writeToNBT(compound);
     }
 
-    public boolean isPlayerIsInMe() {
-        return playerIsInMe;
+    public boolean isEntityIsInMe() {
+        return entityIsInMe;
     }
 
-    public void setPlayerIsInMe(boolean ewGrossGetItOut) {
-        playerIsInMe = ewGrossGetItOut;
+    public void setEntityIsInMe(boolean ewGrossGetItOut) {
+        entityIsInMe = ewGrossGetItOut;
     }
 
-    public void updatePlayerIsInMe() {
-        if (!playerIsInMe) {
+    public void updateEntityIsInMe() {
+        if (!entityIsInMe) {
             //TriggersMod.logger.debug("Block> THERE'S SOMETHING INSIDE ME THERE'S SOMETHING INSIDE ME OH GOD GET IT OUT");
-            setPlayerIsInMe(true);
+            setEntityIsInMe(true);
         }
         counter++;
         if (counter >= MAX_COUNTER) {
             counter = 0;
         }
+
     }
 
     int timeCount = 0;
 
     @Override
-    public void update() {
-        if (playerIsInMe) {
+    public void checkStateServer() {
+        super.checkStateServer();
+        if (entityIsInMe) {
             if (timeCount >= DELAY_LENGTH) {
                 if (oldCounter != counter) {
                     oldCounter = counter;
-                    if (getPowerLevel() != MAX_POWER_LEVEL) {
+                    if (!isActive()) {
                         //TriggersMod.logger.info("Block> MY POWER LEVEL IS OVER 14!");
-                        setPowerLevel(MAX_POWER_LEVEL);
+                        setActive(true);
                     }
                 } else {
-                    //TriggersMod.logger.info("Block> Oh good, the gross thing isn't in my anymore.");
-                    setPlayerIsInMe(false);
-                    setPowerLevel(0);
+                    TriggersMod.logger.info("Block> Oh good, the gross thing isn't in me anymore.");
+
+                    setEntityIsInMe(false);
+                    setActive(false);
+
                 }
                 timeCount = 0;
             }
             timeCount++;
         }
     }
+
+    //  public static List<TileTriggerEntity> triggerPlayerList = new ArrayList<TileTriggerEntity>();
+
+    //  public void registerTrigger() {
+    //      TileTriggerEntity.triggerPlayerList.add(this);
+    //  }
+
+    //  public void destroyTrigger() {
+    //     TileTriggerEntity.triggerPlayerList.remove(this);
+    // }
 
 }

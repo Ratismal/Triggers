@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 public class ChatHelper {
 
     public static void sendMessageToPlayer(EntityPlayer player, String message) {
-        if (!player.getEntityWorld().isRemote)
+        if (player.getEntityWorld().isRemote)
             player.addChatMessage(new ChatComponentText(message));
     }
 

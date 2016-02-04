@@ -10,6 +10,8 @@ public class RefBlocks {
     public static final String BLOCK_FIRST = "firstblock";
     public static final String BLOCK_WIRELESS_EMITTER = "blockwemitter";
     public static final String BLOCK_WIRELESS_RECEIVER = "blockwreceiver";
+    public static final String BLOCK_BARRIER = "blockbarrier";
+    public static final String BLOCK_CREATIVE_JAMMER = "blockcreativejammer";
 
     //Triggers
     public static final String BLOCK_TRIGGER_PLAYER = "blocktriggerplayer";

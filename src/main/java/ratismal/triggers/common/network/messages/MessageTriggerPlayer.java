@@ -1,14 +1,11 @@
 package ratismal.triggers.common.network.messages;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import ratismal.triggers.TriggersMod;
@@ -16,7 +13,6 @@ import ratismal.triggers.common.container.ContainerEmpty;
 import ratismal.triggers.common.network.ITMessage;
 import ratismal.triggers.common.network.MessageUtil;
 import ratismal.triggers.common.tileentity.TileTrigger;
-import ratismal.triggers.common.tileentity.TileTriggerPlayer;
 
 /**
  * Created by Ratismal on 2016-01-20.
