@@ -1,12 +1,12 @@
-package ratismal.triggers.client;
+package ratismal.triggers.common.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import ratismal.triggers.client.gui.GuiTriggerItem;
-import ratismal.triggers.client.gui.GuiWirelessReceiver;
+import ratismal.triggers.client.gui.GuiTriggerProximity;
+import ratismal.triggers.client.gui.GuiTriggerBase;
 import ratismal.triggers.common.container.ContainerEmpty;
-import ratismal.triggers.common.ref.RefGui;
+import ratismal.triggers.client.ref.RefGui;
 
 /**
  * Created by Ratismal on 2016-01-15.
@@ -16,9 +16,9 @@ public class GuiHandler implements IGuiHandler{
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
-            case RefGui.WIRELESS_RECEIVER:
+            case RefGui.TRIGGER_BASE:
                 return new ContainerEmpty(player, world, x, y, z);
-            case RefGui.PROXIMITY_TRIGGER:
+            case RefGui.TRIGGER_PROXIMITY:
                 return new ContainerEmpty(player, world, x, y, z);
         }
         return null;
@@ -27,10 +27,10 @@ public class GuiHandler implements IGuiHandler{
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
-            case RefGui.WIRELESS_RECEIVER:
-                return new GuiWirelessReceiver(player, world, x, y, z);
-            case RefGui.PROXIMITY_TRIGGER:
-                return new GuiTriggerItem(player, world, x, y, z);
+            case RefGui.TRIGGER_BASE:
+                return new GuiTriggerBase(player, world, x, y, z);
+            case RefGui.TRIGGER_PROXIMITY:
+                return new GuiTriggerProximity(player, world, x, y, z);
         }
 
         return null;

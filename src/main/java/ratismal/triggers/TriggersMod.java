@@ -1,10 +1,13 @@
 package ratismal.triggers;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import ratismal.triggers.client.GuiHandler;
+import ratismal.triggers.common.handler.GuiHandler;
 import ratismal.triggers.common.handler.ConfigHandler;
+import ratismal.triggers.common.handler.ForcedChunkHandler;
 import ratismal.triggers.common.init.ModBlocks;
 import ratismal.triggers.common.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +19,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 import ratismal.triggers.common.network.PacketHandler;
+import ratismal.triggers.common.utils.LogHelper;
 
 /**
  * Created by Ratismal on 2016-01-11.
@@ -39,7 +43,11 @@ public class TriggersMod {
     public void preInit(FMLPreInitializationEvent event){
         logger = event.getModLog();
         proxy.preInit(event);
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+
+        /*
+        Temp test stuff
+         */
+
     }
 
     @Mod.EventHandler
@@ -62,19 +70,23 @@ public class TriggersMod {
         }
 
         public void preInit(FMLPreInitializationEvent e) {
+            LogHelper.info("Doing a really cool preInit().");
             ConfigHandler.init(e.getSuggestedConfigurationFile());
-            // Initialization of blocks and items typically goes here:
             ModBlocks.init();
             ModItems.init();
             PacketHandler.init();
         }
 
         public void init(FMLInitializationEvent e) {
+            LogHelper.info("Doing a so-so init().");
+            NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 
         }
 
         public void postInit(FMLPostInitializationEvent e) {
-
+            LogHelper.info("Doing a kinda meh postInit().");
+            ForgeChunkManager.setForcedChunkLoadingCallback(instance, new ForcedChunkHandler());
+            LogHelper.info("Job done.");
         }
     }
 

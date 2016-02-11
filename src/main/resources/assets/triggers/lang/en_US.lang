@@ -5,7 +5,8 @@ tile.blocktriggerplayer.name=Proximity Trigger - Player
 tile.blocktriggerentity.name=Proximity Trigger - Entity
 tile.blocktriggermob.name=Proximity Trigger - Mob
 tile.blocktriggeritem.name=Proximity Trigger - Item
-tile.blockdata.name=Test Block
+tile.blockcreativejammer.name=Creative Jammer
+tile.blockchunkloader.name=Chunk Loader
 
 #Items
 item.eyetransient.name=Transient Eye

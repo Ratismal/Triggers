@@ -29,6 +29,7 @@ public class ItemEyeTransient extends ItemArmor {
         setRegistryName(RefItems.eyeTransient);
         setUnlocalizedName(RefItems.eyeTransient);
         setCreativeTab(CreativeTabTriggers.Triggers_TAB);
+        setMaxStackSize(1);
         GameRegistry.registerItem(this);
     }
 

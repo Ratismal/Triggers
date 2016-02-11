@@ -20,18 +20,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Created by Ratismal on 2016-01-13.
  */
 
-public class ItemPickSubtle extends Item {
+public class ItemPickSubtle extends BaseItem {
 
     public ItemPickSubtle() {
-        setRegistryName(RefItems.pickSubtle);        // The unique name (within your mod) that identifies this item
-        setUnlocalizedName(RefItems.pickSubtle);     // Used for localization (en_US.lang)
-        setCreativeTab(CreativeTabTriggers.Triggers_TAB);
-        GameRegistry.registerItem(this);
+        super(RefItems.pickSubtle);
     }
 
     @SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
+    public boolean isFull3D()
+    {
+        return false;
     }
 
     @Override

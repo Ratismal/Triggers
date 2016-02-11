@@ -2,11 +2,7 @@ package ratismal.triggers.common.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
-import ratismal.triggers.TriggersMod;
 import ratismal.triggers.common.channels.ChannelRedstone;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Ratismal on 2016-01-15.
@@ -17,8 +13,7 @@ public class TileWirelessReceiver extends TileTrigger implements ITickable {
     //public static List<TileWirelessReceiver> receiverList = new ArrayList<TileWirelessReceiver>();
 
     //int lastPower;
-    private int prevPower = 0;
-
+    private boolean prevPower = false;
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -33,14 +28,24 @@ public class TileWirelessReceiver extends TileTrigger implements ITickable {
     @Override
     protected void checkStateServer() {
         super.checkStateServer();
-        if (getPowerLevel() != prevPower) {
-            worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
-            prevPower = getPowerLevel();
-            ChannelRedstone.get(worldObj).save(worldObj);
-            //notify
-            notifyBlockUpdate();
+        if (canProceed()) {
+            if (getPowerLevel() != prevPower) {
+                worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+                prevPower = getPowerLevel();
+                ChannelRedstone.get(worldObj).save(worldObj);
+                notifyBlockUpdate();
+                if (goOnce && getPowerLevel()) {
+                    setTriggered(true);
+                }
+            }
         }
-        //ChannelRedstone.get(worldObj).
+        if (!ChannelRedstone.receivers.containsKey(pos)) {
+            ChannelRedstone.receivers.put(pos, flag);
+        }
+    }
+
+    public void setPrevPower(boolean prevPower) {
+        this.prevPower = prevPower;
     }
 
     /*

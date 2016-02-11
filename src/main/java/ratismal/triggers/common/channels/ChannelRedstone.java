@@ -7,8 +7,9 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
-import ratismal.triggers.TriggersMod;
 import ratismal.triggers.common.tileentity.TileEmitter;
+import ratismal.triggers.common.tileentity.TileTrigger;
+import ratismal.triggers.common.tileentity.TileWirelessReceiver;
 
 import java.util.*;
 
@@ -24,6 +25,7 @@ public class ChannelRedstone extends WorldSavedData {
 
     public static Map<Integer, RedstoneChannel> redstoneChannels = new HashMap<Integer, RedstoneChannel>();
     public static TreeMap<BlockPos, Integer> transmitters = new TreeMap<BlockPos, Integer>();
+    public static TreeMap<BlockPos, Integer> receivers = new TreeMap<BlockPos, Integer>();
 
     public ChannelRedstone() {
         super(IDENTIFIER);
@@ -31,6 +33,21 @@ public class ChannelRedstone extends WorldSavedData {
 
     public ChannelRedstone(String name) {
         super(name);
+    }
+
+    public void resetBlocks(World world) {
+        for (BlockPos pos : transmitters.keySet()) {
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileEmitter) {
+                ((TileEmitter) te).setTriggered(false);
+            }
+        }
+        for (BlockPos pos : receivers.keySet()) {
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileTrigger) {
+                ((TileTrigger) te).setTriggered(false);
+            }
+        }
     }
 
     public void save(World world) {
@@ -47,7 +64,7 @@ public class ChannelRedstone extends WorldSavedData {
         return redstoneChannels.get(key);
     }
 
-    public void setChannelState(int key, int power) {
+    public void setChannelState(int key, boolean power) {
         RedstoneChannel rc;
         if (redstoneChannels.containsKey(key)) {
             rc = redstoneChannels.get(key);
@@ -78,9 +95,9 @@ public class ChannelRedstone extends WorldSavedData {
         }
 
         if (active) {
-            setChannelState(flag, 15);
+            setChannelState(flag, true);
         } else {
-            setChannelState(flag, 0);
+            setChannelState(flag, false);
         }
     }
 
@@ -121,7 +138,7 @@ public class ChannelRedstone extends WorldSavedData {
             int flag = miniCompound.getInteger("flag");
         //    TriggersMod.logger.info(flag + "");
 
-            int power = miniCompound.getInteger("power");
+            boolean power = miniCompound.getBoolean("power");
             //TriggersMod.logger.info(power + "");
 
             if (miniCompound.hasKey("name")) {
@@ -145,7 +162,7 @@ public class ChannelRedstone extends WorldSavedData {
             miniCompound.setInteger("flag", entry.getKey());
             //TriggersMod.logger.info(entry.getKey() + "");
 
-            miniCompound.setInteger("power", entry.getValue().getPower());
+            miniCompound.setBoolean("power", entry.getValue().getPower());
             //TriggersMod.logger.info(entry.getValue().getPower() + "");
 
             if (entry.getValue().hasName()) {
@@ -163,27 +180,27 @@ public class ChannelRedstone extends WorldSavedData {
 
         }
 
-        public RedstoneChannel(int power) {
-            setPower(power);
+        public RedstoneChannel(boolean active) {
+            setPower(active);
         }
 
         public RedstoneChannel(String name) {
             setName(name);
         }
 
-        public RedstoneChannel(int power, String name) {
+        public RedstoneChannel(boolean active, String name) {
             setName(name);
-            setPower(power);
+            setPower(active);
         }
 
-        private int power = 0;
+        private boolean power = false;
         private String name;
 
-        public int getPower() {
+        public boolean getPower() {
             return power;
         }
 
-        public void setPower(int power) {
+        public void setPower(boolean power) {
             this.power = power;
         }
 

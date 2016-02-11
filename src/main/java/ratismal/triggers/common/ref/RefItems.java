@@ -8,6 +8,7 @@ public class RefItems {
 
     public static final String eyeTransient = "eyetransient";
     public static final String cameraTinker = "cameratinker";
-    public static final String pickSubtle= "picksubtle";
+    public static final String pickSubtle = "picksubtle";
+    public static final String containerMob = "containermob";
 
 }

@@ -3,7 +3,7 @@
   "defaults": {
     "model": "triggers:basictrigger",
     "textures": {
-      "all": "triggers:blocks/triggerplayer"
+      "all": "triggers:blocks/jammer"
     }
   },
   "variants": {
@@ -12,7 +12,9 @@
     "visible": {
       "true": {},
       "false": {
-        "model": "triggers:blankblock"
+        "textures": {
+          "all": "triggers:blocks/blank"
+        }
       }
     }
   }
