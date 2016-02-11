@@ -1,7 +1,8 @@
 package ratismal.triggers.common.blocks;
 
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureCompass;
@@ -18,7 +19,9 @@ import ratismal.triggers.TriggersMod;
 import ratismal.triggers.client.ref.RefGui;
 import ratismal.triggers.common.items.ItemCameraTinker;
 import ratismal.triggers.common.ref.RefBlocks;
+import ratismal.triggers.common.tileentity.ModeProximityTrigger;
 import ratismal.triggers.common.tileentity.TileTriggerProximity;
+import ratismal.triggers.common.utils.LogHelper;
 import ratismal.triggers.common.utils.WorldHelper;
 
 import java.util.List;
@@ -27,13 +30,14 @@ import java.util.List;
  * Created by Ratismal on 2016-02-01.
  */
 
-public class BlockTriggerEntity extends BlockEmitter implements ITileEntityProvider {
+public class BlockTriggerProximity extends BlockEmitter implements ITileEntityProvider {
 
-    public static final PropertyInteger MODE = PropertyInteger.create("mode", 0, 3);
+    public static final PropertyEnum MODE = PropertyEnum.create("mode", ModeProximityTrigger.class);
 
-    public BlockTriggerEntity() {
-        super(RefBlocks.BLOCK_TRIGGER_ENTITY);
-        GameRegistry.registerTileEntity(TileTriggerProximity.class, RefBlocks.BLOCK_TRIGGER_ENTITY);
+    public BlockTriggerProximity() {
+        super(RefBlocks.BLOCK_TRIGGER_PROXIMITY);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(MODE, ModeProximityTrigger.PLAYER).withProperty(VISIBLE, false));
+        GameRegistry.registerTileEntity(TileTriggerProximity.class, RefBlocks.BLOCK_TRIGGER_PROXIMITY);
     }
 
 
@@ -76,4 +80,26 @@ public class BlockTriggerEntity extends BlockEmitter implements ITileEntityProvi
         }
         return super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
     }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, VISIBLE, MODE);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        LogHelper.debugInfo("Meta = " + meta + ". Thus, MODE = " + (meta & 3) + " and VISIBLE = " + ((meta & 8) != 0));
+        return getDefaultState()
+                .withProperty(MODE, ModeProximityTrigger.get(meta & 3));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        int meta = 0;
+        ModeProximityTrigger type = (ModeProximityTrigger) state.getValue(MODE);
+        meta += type.getID();
+        LogHelper.debugInfo("Type from meta: " + type.getName() + ". Total meta: " + meta);
+        return meta;
+    }
+
 }

@@ -8,9 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by Ratismal on 2016-01-13.
@@ -106,7 +103,7 @@ public class TileSemiEthereal extends BaseTile implements ITickable {
     }
 
     // Counter that is decremented faster if there are more entities in the vicinity.
-    // If it reaches negative we toggle the light
+    // If it reaches negative we goOnce the light
     private int counter = 0;
 
     // To prevent counting entities every tick we delay it for 10 ticks and remember the last count we had.

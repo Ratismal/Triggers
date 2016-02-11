@@ -26,9 +26,25 @@ public class TileEmitter extends TileTrigger {
     }
 
     public void setActive(boolean active) {
-        this.active = active;
-       // TriggersMod.logger.info("This tile entity is now " + isActive());
-        ChannelRedstone.get(worldObj).update(flag, worldObj);
+        //TriggersMod.logger.info(canProceed() + " " + goOnce + " " + triggered);
+        if (canProceed()) {
+            //TriggersMod.logger.info(active);
+            this.active = active;
+            // TriggersMod.logger.info("This tile entity is now " + isActive());
+            ChannelRedstone.get(worldObj).update(flag, worldObj);
+            if (goOnce) {
+                setTriggered(true);
+            }
+        }
+    }
+
+    @Override
+    public void setTriggered(boolean triggered) {
+        super.setTriggered(triggered);
+        if (!triggered) {
+            this.active = false;
+            ChannelRedstone.get(worldObj).update(flag, worldObj);
+        }
     }
 
     @Override
@@ -37,6 +53,4 @@ public class TileEmitter extends TileTrigger {
         ChannelRedstone.transmitters.remove(pos);
         ChannelRedstone.transmitters.put(pos, flag);
     }
-
-
 }

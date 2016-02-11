@@ -1,24 +1,18 @@
 package ratismal.triggers.common.items;
 
-import ratismal.triggers.TriggersMod;
 import ratismal.triggers.common.blocks.BaseBlockTrigger;
-import ratismal.triggers.common.tab.CreativeTabTriggers;
+import ratismal.triggers.common.channels.ChannelRedstone;
+import ratismal.triggers.common.ref.RefItems;
 import ratismal.triggers.common.tileentity.TileTrigger;
 import ratismal.triggers.common.utils.ChatHelper;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -26,21 +20,13 @@ import java.util.List;
  * Created by Ratismal on 2016-01-12.
  */
 
-public class ItemCameraTinker extends Item {
+public class ItemCameraTinker extends BaseItem {
 
     public ItemCameraTinker() {
-        setRegistryName("cameratinker");
-        setUnlocalizedName("cameratinker");
-        setCreativeTab(CreativeTabTriggers.Triggers_TAB);
-        GameRegistry.registerItem(this);
+        super(RefItems.cameraTinker);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-    }
-
-    public void initItem(ItemStack stack) {
+    public NBTTagCompound getSafeTagCompound(ItemStack stack) {
         if (!stack.hasTagCompound()) {
             NBTTagCompound tagCompound = new NBTTagCompound();
             tagCompound.setInteger("mode", 0);
@@ -54,108 +40,77 @@ public class ItemCameraTinker extends Item {
 
             stack.setTagCompound(tagCompound);
         }
-
+        return stack.getTagCompound();
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {
-        initItem(itemStackIn);
-
-        NBTTagCompound tagCompound = itemStackIn.getTagCompound();
+        NBTTagCompound tagCompound = getSafeTagCompound(itemStackIn);
 
         if (playerIn.isSneaking()) {
             int mode = tagCompound.getInteger("mode");
             mode++;
-            if (mode >= 2) {
+            if (mode >= 3) {
                 mode = 0;
             }
             tagCompound.setInteger("mode", mode);
             switch (mode) {
                 case 0:
-                    ChatHelper.sendMessageToPlayer(playerIn, "Mode: Edit");
+                    ChatHelper.sendMessageToPlayer(playerIn, "Mode: Edit", true);
                     break;
-              //  case 2:
-                 //   ChatHelper.sendMessageToPlayer(playerIn, "Mode: Link");
-               //     break;
                 case 1:
-                    ChatHelper.sendMessageToPlayer(playerIn, "Mode: Copy");
+                    ChatHelper.sendMessageToPlayer(playerIn, "Mode: Copy", true);
+                    break;
+                case 2:
+                    ChatHelper.sendMessageToPlayer(playerIn, "Mode: Reset", true);
                     break;
                 default:
-                    ChatHelper.sendMessageToPlayer(playerIn, "You broke something. Good job. We're all so proud.");
+                    ChatHelper.sendMessageToPlayer(playerIn, "You broke something. Good job. We're all so proud.", true);
                     break;
             }
         } else {
-            if (tagCompound.getInteger("mode") == 3) {
-                NBTTagCompound linkCompound = tagCompound.getCompoundTag("link");
-                linkCompound.setBoolean("linking", false);
-                ChatHelper.sendMessageToPlayer(playerIn, "Clearing link target data");
+            if (tagCompound.getInteger("mode") == 2) {
+                ChannelRedstone.get(worldIn).resetBlocks(worldIn);
+                ChatHelper.sendMessageToPlayer(playerIn, "Resetting triggers", true);
             } else if (tagCompound.getInteger("mode") == 1) {
                 NBTTagCompound copyCompound = tagCompound.getCompoundTag("copy");
                 copyCompound.setBoolean("copying", false);
-                ChatHelper.sendMessageToPlayer(playerIn, "Clearing copied data");
+                ChatHelper.sendMessageToPlayer(playerIn, "Clearing copied data", true);
             }
         }
-
         return itemStackIn;
     }
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-        initItem(stack);
 
-        NBTTagCompound tagCompound = stack.getTagCompound();
-     //   TriggersMod.logger.info(tagCompound.getInteger("mode"));
-
+        NBTTagCompound tagCompound = getSafeTagCompound(stack);
         switch (tagCompound.getInteger("mode")) {
             case 0:
                 break;
-            case 2:
-                NBTTagCompound linkCompound = tagCompound.getCompoundTag("link");
-
+            case 1:
+                NBTTagCompound copyCompound = tagCompound.getCompoundTag("copy");
                 if (worldIn.getBlockState(pos).getBlock() instanceof BaseBlockTrigger) {
-                    linkCompound.setInteger("targetX", pos.getX());
-                    linkCompound.setInteger("targetY", pos.getY());
-                    linkCompound.setInteger("targetZ", pos.getZ());
-                    linkCompound.setBoolean("linking", true);
-                } else {
-                    if (linkCompound.getBoolean("linking")) {
-                        /*
-                        TileTrigger tileTrigger = (TileTrigger) worldIn.getTileEntity(new BlockPos(
-                                linkCompound.getInteger("targetX"),
-                                linkCompound.getInteger("targetY"),
-                                linkCompound.getInteger("targetZ")));
-                        tileTrigger.addTarget(pos);
-                        ChatHelper.sendMessageToPlayer(playerIn, "Block linked.");
-                        tileTrigger.markDirty();
-                        */
+                    if (copyCompound.getBoolean("copying")) {
+                        TileTrigger tt = (TileTrigger) worldIn.getTileEntity(pos);
+                        NBTTagCompound tempCompound = tt.getTagCompound();
+                        tempCompound.setInteger("flag", copyCompound.getCompoundTag("backup").getInteger("flag"));
+                        tempCompound.setBoolean("goOnce", copyCompound.getCompoundTag("backup").getBoolean("goOnce"));
+                        tt.writeToNBT(tempCompound);
+                        tt.setFlag(copyCompound.getCompoundTag("backup").getInteger("flag"));
+                        tt.setGoOnce(copyCompound.getCompoundTag("backup").getBoolean("goOnce"));
+                        // tt.markDirty();
+                        ChatHelper.sendMessageToPlayer(playerIn, "Data loaded", true);
                     } else {
-                        ChatHelper.sendMessageToPlayer(playerIn, "You must select a trigger block first.");
+                        TileTrigger tileTrigger = (TileTrigger) worldIn.getTileEntity(pos);
+                        copyCompound.setTag("backup", tileTrigger.getTagCompound());
+                        copyCompound.setString("blockname", worldIn.getBlockState(pos).getBlock().getRegistryName());
+                        copyCompound.setBoolean("copying", true);
+                        ChatHelper.sendMessageToPlayer(playerIn, "Data copied", true);
                     }
                 }
                 break;
-            case 1:
-             //   ChatHelper.sendMessageToPlayer(playerIn, "Doing a copy thing");
-           //     TriggersMod.logger.info("Copying");
-
-                NBTTagCompound copyCompound = tagCompound.getCompoundTag("copy");
-                    if (worldIn.getBlockState(pos).getBlock() instanceof BaseBlockTrigger) {
-                        if (copyCompound.getBoolean("copying")) {
-                            TileTrigger tt = (TileTrigger) worldIn.getTileEntity(pos);
-                            NBTTagCompound tempCompound = tt.getTagCompound();
-                            tempCompound.setInteger("flag", copyCompound.getCompoundTag("backup").getInteger("flag"));
-                            tt.writeToNBT(tempCompound);
-                            tt.setFlag(copyCompound.getCompoundTag("backup").getInteger("flag"));
-                           // tt.markDirty();
-                            ChatHelper.sendMessageToPlayer(playerIn, "Data loaded");
-                        } else {
-                            TriggersMod.logger.info("Copying");
-                            TileTrigger tileTrigger = (TileTrigger) worldIn.getTileEntity(pos);
-                            copyCompound.setTag("backup", tileTrigger.getTagCompound());
-                            copyCompound.setString("blockname", worldIn.getBlockState(pos).getBlock().getRegistryName());
-                            copyCompound.setBoolean("copying", true);
-                            ChatHelper.sendMessageToPlayer(playerIn, "Data copied");
-                        }
-                    }
+            case 2:
                 break;
             default:
                 break;
@@ -166,17 +121,16 @@ public class ItemCameraTinker extends Item {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
-        initItem(stack);
-        int mode = stack.getTagCompound().getInteger("mode");
+        int mode = getSafeTagCompound(stack).getInteger("mode");
         switch (mode) {
             case 0:
-                list.add("Mode: Edit");
-                break;
-            case 2:
-                list.add("Mode: Link");
+                list.add(EnumChatFormatting.WHITE + "Mode: Edit");
                 break;
             case 1:
-                list.add("Mode: Copy");
+                list.add(EnumChatFormatting.WHITE + "Mode: Copy");
+                break;
+            case 2:
+                list.add(EnumChatFormatting.WHITE + "Mode: Reset");
                 break;
             default:
                 break;
@@ -185,23 +139,26 @@ public class ItemCameraTinker extends Item {
         if (GuiScreen.isShiftKeyDown()) {
             switch (mode) {
                 case 0:
-                    list.add("Edit a trigger block's");
-                    list.add("settings");
+                    list.add(EnumChatFormatting.WHITE + "Edit a trigger block's");
+                    list.add(EnumChatFormatting.WHITE + "settings");
                     break;
                 case 1:
-                    list.add("Link a trigger block's output to ");
-                    list.add("another location");
+                    list.add(EnumChatFormatting.WHITE + "Copy a trigger block's settings to");
+                    list.add(EnumChatFormatting.WHITE + "another trigger block");
                     break;
                 case 2:
-                    list.add("Copy a trigger block's settings to");
-                    list.add("another trigger block");
+                    list.add(EnumChatFormatting.WHITE + "Resets all triggers to");
+                    list.add(EnumChatFormatting.WHITE + "their original state");
                     break;
                 default:
                     break;
             }
-            list.add("Right click this item while sneaking to change modes");
+            list.add("");
+            list.add(EnumChatFormatting.WHITE + "Right click this item while");
+            list.add(EnumChatFormatting.WHITE + "sneaking to change modes");
         } else {
-            list.add("Hold " + EnumChatFormatting.GOLD + "SHIFT" + EnumChatFormatting.RESET + " for more information");
+            list.add(EnumChatFormatting.WHITE + "Hold " + EnumChatFormatting.GOLD + "SHIFT");
+            list.add(EnumChatFormatting.WHITE + "for more information");
         }
     }
 }

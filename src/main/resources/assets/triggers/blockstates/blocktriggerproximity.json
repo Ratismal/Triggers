@@ -1,0 +1,46 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "triggers:basictrigger",
+    "textures": {
+      "all": "triggers:blocks/triggerentity"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "visible": {
+      "false": {
+        "textures": {
+          "all": "triggers:blocks/blank"
+        },
+        "model": "triggers:blankblock"
+      },
+      "true": {
+
+      }
+    },
+    "mode": {
+      "player": {
+        "textures": {
+          "all": "triggers:blocks/triggerplayer"
+        }
+      },
+      "mob": {
+        "textures": {
+          "all": "triggers:blocks/triggermob"
+        }
+      },
+      "item": {
+        "textures": {
+          "all": "triggers:blocks/triggeritem"
+        }
+      },
+      "entity": {
+        "textures": {
+          "all": "triggers:blocks/triggerentity"
+        }
+      }
+    }
+  }
+}
