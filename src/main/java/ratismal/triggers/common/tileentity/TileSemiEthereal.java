@@ -33,52 +33,6 @@ public class TileSemiEthereal extends BaseTile implements ITickable {
         timeCount++;
     }
 
-    public boolean is(EntityPlayer player) {
-        //if (what == Property.SOLID) return true;
-
-        ItemStack helmet = player.inventory.armorItemInSlot(3);
-
-        if (helmet == null) return false;
-
-        Item item = helmet.getItem();
-
-        if (item instanceof ItemEyeTransient) {
-            return ((ItemEyeTransient) item).checkBlock(helmet, this);
-        }
-
-        return false;
-    }
-
-    public boolean isNoCol(EntityPlayer player) {
-        //if (what == Property.SOLID) return true;
-
-        ItemStack helmet = player.inventory.armorItemInSlot(3);
-
-        if (helmet == null) return false;
-
-        Item item = helmet.getItem();
-
-        if (item instanceof ItemEyeTransient) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean is(Entity e) {
-        return (e instanceof EntityPlayer) && is((EntityPlayer) e);
-    }
-
-    public boolean is() {
-        EntityPlayer player = TriggersMod.ClientProxy.getThePlayer();
-        return player != null && is(player);
-    }
-
-    public boolean isNoCol() {
-        EntityPlayer player = TriggersMod.ClientProxy.getThePlayer();
-        return player != null && isNoCol(player);
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);

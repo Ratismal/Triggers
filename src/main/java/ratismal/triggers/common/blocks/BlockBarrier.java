@@ -18,16 +18,10 @@ import java.util.List;
  * Created by Ratismal on 2016-02-03.
  */
 
-public class BlockBarrier extends BaseBlockSemiEthereal implements ITileEntityProvider {
+public class BlockBarrier extends BaseBlockSemiEthereal {
 
     public BlockBarrier() {
         super(RefBlocks.BLOCK_BARRIER);
-        GameRegistry.registerTileEntity(TileSemiEthereal.class, RefBlocks.BLOCK_BARRIER);
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileTriggerProximity();
     }
 
     @Override
@@ -37,16 +31,9 @@ public class BlockBarrier extends BaseBlockSemiEthereal implements ITileEntityPr
 
     @Override
     public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
-        //super.addCollisionBoxesToList(worldIn, pos, state, mask, list, collidingEntity);
-        AxisAlignedBB axisalignedbb = this.getCollisionBoundingBox(worldIn, pos, state);
-        TileSemiEthereal te = getTileEntity(worldIn, pos);
-        if (te != null && !te.is(collidingEntity)) {
+        if (!is(collidingEntity)) {
             AxisAlignedBB aabb = AxisAlignedBB.fromBounds(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
             if (aabb != null && aabb.intersectsWith(mask)) list.add(aabb);
-            //TriggersMod.logger.info("Adding collision box");
-            //list.add(mask);
-            //toggleTexture(worldIn, pos, state, true);
-
         }
     }
 }

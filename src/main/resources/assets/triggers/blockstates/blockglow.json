@@ -3,7 +3,7 @@
   "defaults": {
     "model": "triggers:basictrigger",
     "textures": {
-      "sides": "triggers:blocks/triggermob"
+      "sides": "triggers:blocks/glow"
     }
   },
   "variants": {

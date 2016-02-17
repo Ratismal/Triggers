@@ -3,6 +3,7 @@ package ratismal.triggers.common.tileentity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import ratismal.triggers.common.channels.ChannelRedstone;
+import ratismal.triggers.common.utils.LogHelper;
 
 /**
  * Created by Ratismal on 2016-01-15.
@@ -18,11 +19,14 @@ public class TileWirelessReceiver extends TileTrigger implements ITickable {
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
+        //LogHelper.debugInfo("receiver read");
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
+        //LogHelper.debugInfo("receiver write");
+
     }
 
     @Override

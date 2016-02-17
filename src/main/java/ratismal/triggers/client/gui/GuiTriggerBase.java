@@ -3,10 +3,13 @@ package ratismal.triggers.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 import ratismal.triggers.common.container.ContainerEmpty;
 import ratismal.triggers.common.network.PacketHandler;
@@ -41,12 +44,24 @@ public class GuiTriggerBase extends GuiContainer {
     GuiTextField textFlag;
     GuiTextField textName;
 
-    public GuiTriggerBase(EntityPlayer player, World world, int x, int y, int z) {
-        super(new ContainerEmpty(player, world, x, y, z));
+    public GuiTriggerBase(EntityPlayer player, World world, int x, int y, int z, Container container) {
+        super(container);
 
-        this.xSize = X_SIZE;
-        this.ySize = Y_SIZE;
+        this.xSize = getX_SIZE();
+        this.ySize = getY_SIZE();
         this.te = (TileTrigger) world.getTileEntity(new BlockPos(x, y, z));
+    }
+
+    public ResourceLocation getBackground() {
+        return background;
+    }
+
+    public int getX_SIZE() {
+        return X_SIZE;
+    }
+
+    public int getY_SIZE() {
+        return Y_SIZE;
     }
 
     @Override
@@ -119,7 +134,7 @@ public class GuiTriggerBase extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 
-        this.mc.renderEngine.bindTexture(background);
+        this.mc.renderEngine.bindTexture(getBackground());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;

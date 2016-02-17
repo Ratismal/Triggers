@@ -41,9 +41,10 @@ public class ItemContainerMob extends BaseItem {
             return true;
         }
         NBTTagCompound tagCompound = getSafeTagCompound(stack);
-
+        NBTTagCompound mobCompound = new NBTTagCompound();
+        target.writeEntityToNBT(mobCompound);
         tagCompound.setString("mobName", target.getName());
-
+        tagCompound.setTag("mob", mobCompound);
         stack.setTagCompound(tagCompound);
         playerIn.setCurrentItemOrArmor(0, stack);
         //playerIn.inventory.ad

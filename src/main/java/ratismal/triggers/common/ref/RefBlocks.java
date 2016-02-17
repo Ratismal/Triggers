@@ -13,6 +13,7 @@ public class RefBlocks {
     public static final String BLOCK_BARRIER = "blockbarrier";
     public static final String BLOCK_CREATIVE_JAMMER = "blockcreativejammer";
     public static final String BLOCK_CHUNK_LOADER = "blockchunkloader";
+    public static final String BLOCK_GLOW = "blockglow";
 
     //Triggers
     public static final String BLOCK_TRIGGER_PLAYER = "blocktriggerplayer";

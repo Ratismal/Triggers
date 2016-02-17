@@ -2,6 +2,7 @@ package ratismal.triggers.common.network.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -28,6 +29,7 @@ public class MessageTriggerProximity implements ITMessage {
     private int flag;
     private boolean goOnce;
     private ModeProximityTrigger mode;
+    private ItemStack stack;
 
     // The basic, no-argument constructor MUST be included to use the new automated handling
     public MessageTriggerProximity() {
@@ -42,6 +44,14 @@ public class MessageTriggerProximity implements ITMessage {
         this.mode = mode;
     }
 
+    public MessageTriggerProximity(int flag, BlockPos pos, boolean goOnce, ModeProximityTrigger mode, ItemStack stack) {
+        this.flag = flag;
+        this.pos = pos;
+        this.goOnce = goOnce;
+        this.mode = mode;
+        this.stack = stack;
+    }
+
     @Override
     public void fromBytes(ByteBuf buffer) {
         // basic Input/Output operations, very much like DataInputStream
@@ -49,8 +59,8 @@ public class MessageTriggerProximity implements ITMessage {
         pos = MessageUtil.readBlockPos(buffer);
         goOnce = buffer.readBoolean();
         //LogHelper.debugInfo(ModeProximityTrigger.get());
-
         mode = ModeProximityTrigger.get(buffer.readInt());
+        stack = ByteBufUtils.readItemStack(buffer);
     }
 
     @Override
@@ -60,6 +70,7 @@ public class MessageTriggerProximity implements ITMessage {
         MessageUtil.writeBlockPos(pos, buffer);
         buffer.writeBoolean(goOnce);
         buffer.writeInt(mode.getID());
+        ByteBufUtils.writeItemStack(buffer, stack);
     }
 
     @Override
@@ -82,6 +93,7 @@ public class MessageTriggerProximity implements ITMessage {
                             trigger.setFlag(flag);
                             ((TileTrigger) te).setGoOnce(goOnce);
                             ((TileTriggerProximity) te).setMode(mode);
+                            ((TileTriggerProximity) te).setStack(stack);
                         }
                     }
                 }

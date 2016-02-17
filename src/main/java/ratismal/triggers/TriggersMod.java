@@ -25,7 +25,7 @@ import ratismal.triggers.common.utils.LogHelper;
  * Created by Ratismal on 2016-01-11.
  */
 
-@Mod(modid = TriggersMod.MODID, name = TriggersMod.MODNAME, dependencies = "required-after:Forge@[11.15.0.1634,)", useMetadata = true)
+@Mod(modid = TriggersMod.MODID, name = TriggersMod.MODNAME, version = "1.0.1", dependencies = "required-after:Forge@[11.15.0.1634,)", useMetadata = true)
 public class TriggersMod {
 
     public static final String MODID = "triggers";

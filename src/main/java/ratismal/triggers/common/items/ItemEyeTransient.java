@@ -1,5 +1,8 @@
 package ratismal.triggers.common.items;
 
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumChatFormatting;
 import ratismal.triggers.common.ref.RefItems;
 import ratismal.triggers.common.tab.CreativeTabTriggers;
 import ratismal.triggers.common.tileentity.TileSemiEthereal;
@@ -80,17 +83,47 @@ public class ItemEyeTransient extends ItemArmor {
         return tagCompound;
     }
 
-    public boolean checkBlock(ItemStack stack, TileSemiEthereal te) {
+    public boolean checkBlock(ItemStack stack) {
         return getTagCompoundSafe(stack).getBoolean("active");
     }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
-        if (getTagCompoundSafe(stack).getBoolean("active"))
-            list.add("Mode: Bypass");
+        boolean active = getTagCompoundSafe(stack).getBoolean("active");
+
+        if (active)
+            list.add(EnumChatFormatting.WHITE + "Mode: Bypass");
         else
-            list.add("Mode: Normal");
+            list.add(EnumChatFormatting.WHITE + "Mode: Normal");
+
+        list.add(" ");
+        if (GuiScreen.isShiftKeyDown()) {
+            list.add(EnumChatFormatting.WHITE + "Wearing this item lets");
+            list.add(EnumChatFormatting.WHITE + "you see semi-ethereal");
+            list.add(EnumChatFormatting.WHITE + "blocks.");
+            if (active) {
+                list.add(EnumChatFormatting.WHITE + "You will not activate");
+                list.add(EnumChatFormatting.WHITE + "triggers.");
+            } else {
+                list.add(EnumChatFormatting.WHITE + "You will activate");
+                list.add(EnumChatFormatting.WHITE + "triggers as normal.");
+            }
+            list.add("");
+            list.add(EnumChatFormatting.WHITE + "Right click this item while");
+            list.add(EnumChatFormatting.WHITE + "sneaking to change modes");
+        } else {
+            list.add(EnumChatFormatting.WHITE + "Hold " + EnumChatFormatting.GOLD + "SHIFT");
+            list.add(EnumChatFormatting.WHITE + "for more information");
+        }
     }
 
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+        if (isActive(stack))
+            return "triggers:textures/models/armor/eye_1.png";
+        else
+            return "triggers:textures/models/armor/eye_0.png";
+
+    }
 }

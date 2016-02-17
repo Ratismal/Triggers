@@ -1,5 +1,7 @@
 package ratismal.triggers.common.items;
 
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.EnumChatFormatting;
 import ratismal.triggers.common.blocks.BaseBlockSemiEthereal;
 import ratismal.triggers.common.ref.RefItems;
 import ratismal.triggers.common.tab.CreativeTabTriggers;
@@ -16,6 +18,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
+
 /**
  * Created by Ratismal on 2016-01-13.
  */
@@ -27,8 +31,7 @@ public class ItemPickSubtle extends BaseItem {
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
+    public boolean isFull3D() {
         return false;
     }
 
@@ -46,5 +49,20 @@ public class ItemPickSubtle extends BaseItem {
         }
 
         return super.onItemUse(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+        if (GuiScreen.isShiftKeyDown()) {
+
+            list.add(EnumChatFormatting.WHITE + "Right click on");
+            list.add(EnumChatFormatting.WHITE + "semi-ethereal blocks");
+            list.add(EnumChatFormatting.WHITE + "with this item to");
+            list.add(EnumChatFormatting.WHITE + "remove them.");
+
+        } else {
+            list.add(EnumChatFormatting.WHITE + "Hold " + EnumChatFormatting.GOLD + "SHIFT");
+            list.add(EnumChatFormatting.WHITE + "for more information");
+        }
     }
 }

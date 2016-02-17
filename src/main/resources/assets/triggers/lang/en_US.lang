@@ -1,14 +1,15 @@
 # Blocks
 tile.blockwemitter.name=Wireless Redstone Emitter
 tile.blockwreceiver.name=Wireless Redstone Receiver
-tile.blocktriggerplayer.name=Proximity Trigger - Player
-tile.blocktriggerentity.name=Proximity Trigger - Entity
-tile.blocktriggermob.name=Proximity Trigger - Mob
-tile.blocktriggeritem.name=Proximity Trigger - Item
+tile.blocktriggerproximity.name=Proximity Trigger
 tile.blockcreativejammer.name=Creative Jammer
 tile.blockchunkloader.name=Chunk Loader
+tile.blockglow.name=Light Source
+tile.blockbarrier.name=Barrier
+tile.testblock.name=Test Block
 
 #Items
 item.eyetransient.name=Transient Eye
 item.cameratinker.name=Camcorder
 item.picksubtle.name=Subtle Pickaxe
+item.containermob.name=Soul Imprint

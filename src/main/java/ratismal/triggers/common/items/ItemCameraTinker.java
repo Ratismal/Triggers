@@ -3,7 +3,9 @@ package ratismal.triggers.common.items;
 import ratismal.triggers.common.blocks.BaseBlockTrigger;
 import ratismal.triggers.common.channels.ChannelRedstone;
 import ratismal.triggers.common.ref.RefItems;
+import ratismal.triggers.common.tileentity.ModeProximityTrigger;
 import ratismal.triggers.common.tileentity.TileTrigger;
+import ratismal.triggers.common.tileentity.TileTriggerProximity;
 import ratismal.triggers.common.utils.ChatHelper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -93,12 +95,20 @@ public class ItemCameraTinker extends BaseItem {
                 if (worldIn.getBlockState(pos).getBlock() instanceof BaseBlockTrigger) {
                     if (copyCompound.getBoolean("copying")) {
                         TileTrigger tt = (TileTrigger) worldIn.getTileEntity(pos);
-                        NBTTagCompound tempCompound = tt.getTagCompound();
-                        tempCompound.setInteger("flag", copyCompound.getCompoundTag("backup").getInteger("flag"));
-                        tempCompound.setBoolean("goOnce", copyCompound.getCompoundTag("backup").getBoolean("goOnce"));
-                        tt.writeToNBT(tempCompound);
-                        tt.setFlag(copyCompound.getCompoundTag("backup").getInteger("flag"));
-                        tt.setGoOnce(copyCompound.getCompoundTag("backup").getBoolean("goOnce"));
+                        //NBTTagCompound tempCompound = tt.getTagCompound();
+                        //tempCompound.setInteger("flag", copyCompound.getCompoundTag("backup").getInteger("flag"));
+                        //tempCompound.setBoolean("goOnce", copyCompound.getCompoundTag("backup").getBoolean("goOnce"));
+                        //tt.writeToNBT(tempCompound);
+                        NBTTagCompound backupCompound = copyCompound.getCompoundTag("backup");
+                        tt.setFlag(backupCompound.getInteger("flag"));
+                        tt.setGoOnce(backupCompound.getBoolean("goOnce"));
+                        if (tt instanceof TileTriggerProximity) {
+                            TileTriggerProximity ttp = (TileTriggerProximity) tt;
+                            if (backupCompound.hasKey("item"))
+                                ttp.setStack(ItemStack.loadItemStackFromNBT(backupCompound.getCompoundTag("item")));
+                            if (backupCompound.hasKey("mode"))
+                                ttp.setMode(ModeProximityTrigger.get(backupCompound.getInteger("mode")));
+                        }
                         // tt.markDirty();
                         ChatHelper.sendMessageToPlayer(playerIn, "Data loaded", true);
                     } else {
@@ -137,17 +147,18 @@ public class ItemCameraTinker extends BaseItem {
         }
         list.add(" ");
         if (GuiScreen.isShiftKeyDown()) {
+            list.add(EnumChatFormatting.WHITE + "This item lets you");
             switch (mode) {
                 case 0:
-                    list.add(EnumChatFormatting.WHITE + "Edit a trigger block's");
+                    list.add(EnumChatFormatting.WHITE + "edit a trigger block's");
                     list.add(EnumChatFormatting.WHITE + "settings");
                     break;
                 case 1:
-                    list.add(EnumChatFormatting.WHITE + "Copy a trigger block's settings to");
+                    list.add(EnumChatFormatting.WHITE + "copy a trigger block's settings to");
                     list.add(EnumChatFormatting.WHITE + "another trigger block");
                     break;
                 case 2:
-                    list.add(EnumChatFormatting.WHITE + "Resets all triggers to");
+                    list.add(EnumChatFormatting.WHITE + "reset all triggers to");
                     list.add(EnumChatFormatting.WHITE + "their original state");
                     break;
                 default:

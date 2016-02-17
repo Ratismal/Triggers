@@ -3,7 +3,7 @@
   "defaults": {
     "model": "triggers:basictrigger",
     "textures": {
-      "all": "triggers:blocks/jammer"
+      "sides": "triggers:blocks/jammer"
     }
   },
   "variants": {
@@ -13,7 +13,7 @@
       "true": {},
       "false": {
         "textures": {
-          "all": "triggers:blocks/blank"
+          "sides": "triggers:blocks/blank"
         }
       }
     }

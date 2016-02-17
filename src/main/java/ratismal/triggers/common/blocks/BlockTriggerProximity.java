@@ -7,7 +7,11 @@ import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureCompass;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -18,6 +22,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import ratismal.triggers.TriggersMod;
 import ratismal.triggers.client.ref.RefGui;
 import ratismal.triggers.common.items.ItemCameraTinker;
+import ratismal.triggers.common.items.ItemContainerMob;
 import ratismal.triggers.common.ref.RefBlocks;
 import ratismal.triggers.common.tileentity.ModeProximityTrigger;
 import ratismal.triggers.common.tileentity.TileTriggerProximity;
@@ -43,6 +48,7 @@ public class BlockTriggerProximity extends BlockEmitter implements ITileEntityPr
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
+        LogHelper.debugInfo("Creating new TileTriggerProximity");
         return new TileTriggerProximity();
     }
 
@@ -51,9 +57,50 @@ public class BlockTriggerProximity extends BlockEmitter implements ITileEntityPr
         super.addCollisionBoxesToList(worldIn, pos, state, mask, list, collidingEntity);
         TileTriggerProximity te = (TileTriggerProximity) WorldHelper.getTileEntity(worldIn, pos);
         //TriggersMod.logger.info("Meow");
-        if (!te.is() && !worldIn.isRemote) {
+        if (!is(collidingEntity) && !worldIn.isRemote) {
+
+            switch (te.getMode()) {
+                case PLAYER:
+                    if (collidingEntity instanceof EntityPlayer)
+                        te.updateEntityIsInMe();
+                    break;
+                case MOB:
+                    if (collidingEntity instanceof EntityLiving) {
+                        if (te.getStack() != null) {
+                            EntityLiving entityMob = (EntityLiving) collidingEntity;
+                            if (te.getStack().getItem() instanceof ItemContainerMob) {
+                                if (entityMob.getName().equals(te.getStack().getTagCompound().getString("mobName"))) {
+                                    LogHelper.debugInfo("Mobs matched!");
+                                    te.updateEntityIsInMe();
+                                } else {
+                                    LogHelper.debugInfo("Mobs didn't match!");
+                                    return;
+                                }
+                            }
+                        }
+                        te.updateEntityIsInMe();
+                    }
+                    break;
+                case ITEM:
+                    if (collidingEntity instanceof EntityItem) {
+                        if (te.getStack() != null) {
+                            EntityItem entityItem = (EntityItem) collidingEntity;
+                            if (entityItem.getEntityItem().getItem() == te.getStack().getItem()) {
+                                LogHelper.debugInfo("Items matched!");
+                                te.updateEntityIsInMe();
+                            } else {
+                                LogHelper.debugInfo("Items did not match!");
+                                return;
+                            }
+                        }
+                        te.updateEntityIsInMe();
+                    }
+                    break;
+                case ENTITY:
+                    te.updateEntityIsInMe();
+                    break;
+            }
             //TriggersMod.logger.info("Meow2");
-            te.updateEntityIsInMe();
         }
     }
 
@@ -88,7 +135,7 @@ public class BlockTriggerProximity extends BlockEmitter implements ITileEntityPr
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        LogHelper.debugInfo("Meta = " + meta + ". Thus, MODE = " + (meta & 3) + " and VISIBLE = " + ((meta & 8) != 0));
+        //LogHelper.debugInfo("Meta = " + meta + ". Thus, MODE = " + (meta & 3) + " and VISIBLE = " + ((meta & 8) != 0));
         return getDefaultState()
                 .withProperty(MODE, ModeProximityTrigger.get(meta & 3));
     }
@@ -98,7 +145,7 @@ public class BlockTriggerProximity extends BlockEmitter implements ITileEntityPr
         int meta = 0;
         ModeProximityTrigger type = (ModeProximityTrigger) state.getValue(MODE);
         meta += type.getID();
-        LogHelper.debugInfo("Type from meta: " + type.getName() + ". Total meta: " + meta);
+        //LogHelper.debugInfo("Type from meta: " + type.getName() + ". Total meta: " + meta);
         return meta;
     }
 

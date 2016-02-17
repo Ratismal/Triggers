@@ -3,7 +3,7 @@
   "defaults": {
     "model": "triggers:basictrigger",
     "textures": {
-      "all": "triggers:blocks/triggerentity"
+      "sides": "triggers:blocks/triggerentity"
     }
   },
   "variants": {
@@ -12,7 +12,7 @@
     "visible": {
       "false": {
         "textures": {
-          "all": "triggers:blocks/blank"
+          "sides": "triggers:blocks/blank"
         },
         "model": "triggers:blankblock"
       },
@@ -23,22 +23,22 @@
     "mode": {
       "player": {
         "textures": {
-          "all": "triggers:blocks/triggerplayer"
+          "sides": "triggers:blocks/triggerplayer"
         }
       },
       "mob": {
         "textures": {
-          "all": "triggers:blocks/triggermob"
+          "sides": "triggers:blocks/triggermob"
         }
       },
       "item": {
         "textures": {
-          "all": "triggers:blocks/triggeritem"
+          "sides": "triggers:blocks/triggeritem"
         }
       },
       "entity": {
         "textures": {
-          "all": "triggers:blocks/triggerentity"
+          "sides": "triggers:blocks/triggerentity"
         }
       }
     }

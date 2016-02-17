@@ -1,9 +1,12 @@
 package ratismal.triggers.common.tileentity;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
 import ratismal.triggers.TriggersMod;
 import ratismal.triggers.common.blocks.BlockTriggerProximity;
 import ratismal.triggers.common.utils.LogHelper;
@@ -22,22 +25,28 @@ public class TileTriggerProximity extends TileEmitter implements ITickable {
 
     boolean entityIsInMe = false;
 
-    ItemStack item;
-    NBTTagCompound mobTags;
+    ItemStack stack;
 
+    public ModeProximityTrigger mode = ModeProximityTrigger.PLAYER;
 
-    private ModeProximityTrigger mode = ModeProximityTrigger.PLAYER;
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        ModeProximityTrigger.get(compound.getInteger("mode"));
+        //LogHelper.debugInfo("read mode = " + ModeProximityTrigger.get(compound.getInteger("mode")));
+        mode = ModeProximityTrigger.get(compound.getInteger("mode"));
+
+        if (compound.hasKey("item"))
+            stack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("item"));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        compound.setInteger("mode", mode.ordinal());
+        //LogHelper.debugInfo("write mode = " + mode.getID());
+        compound.setInteger("mode", mode.getID());
+        if (stack != null)
+            compound.setTag("item", stack.serializeNBT());
     }
 
     public boolean isEntityIsInMe() {
@@ -66,36 +75,60 @@ public class TileTriggerProximity extends TileEmitter implements ITickable {
     public void checkStateServer() {
         super.checkStateServer();
         //if (canProceed())
-            if (entityIsInMe) {
-                if (timeCount >= DELAY_LENGTH) {
-                    if (oldCounter != counter) {
-                        oldCounter = counter;
-                        if (!isActive()) {
-                            setActive(true);
-                        }
-                    } else {
-                        setEntityIsInMe(false);
-                        setActive(false);
+        if (entityIsInMe) {
+            if (timeCount >= DELAY_LENGTH) {
+                if (oldCounter != counter) {
+                    oldCounter = counter;
+                    if (!isActive()) {
+                        setActive(true);
                     }
-                    timeCount = 0;
+                } else {
+                    setEntityIsInMe(false);
+                    setActive(false);
                 }
-                timeCount++;
+                timeCount = 0;
             }
+            timeCount++;
+        }
     }
 
     public void setMode(ModeProximityTrigger mode) {
+        this.mode = mode;
+
+
         if (!worldObj.isRemote) {
             worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BlockTriggerProximity.MODE, mode));
-            LogHelper.debugInfo("Setting mode server-side");
+            //LogHelper.debugInfo("Setting mode server-side");
         }
-        this.mode = mode;
         markDirty();
         worldObj.markBlockForUpdate(getPos());
-        //IBlockState state = worldObj.getBlockState(pos);
-        //worldObj.
+    }
+
+    public void setStack(ItemStack stack) {
+        this.stack = stack;
+        markDirty();
+        worldObj.markBlockForUpdate(getPos());
+        LogHelper.debugInfo("The stack has been set!");
+    }
+
+    public ItemStack getStack() {
+        return stack;
     }
 
     public ModeProximityTrigger getMode() {
         return mode;
     }
+
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        /*
+        if (!newSate.getProperties().containsKey(BlockTriggerProximity.MODE)) {
+            return super.shouldRefresh(world, pos, oldState, newSate);
+        }
+        return oldState.getValue(BlockTriggerProximity.MODE) == newSate.getValue(BlockTriggerProximity.MODE) && super.shouldRefresh(world, pos, oldState, newSate);
+        */
+        return false;
+    }
+
 }

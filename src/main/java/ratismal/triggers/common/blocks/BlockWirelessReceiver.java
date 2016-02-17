@@ -59,4 +59,6 @@ public class BlockWirelessReceiver extends BaseBlockTrigger implements ITileEnti
             return 0;
     }
 
+
+
 }

@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "triggers",
+  "name": "Triggers Mod",
+  "description": "Adds redstone triggers and other utilities.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Ratismal"],
+  "credits": "Everyone at Hysteria Unleashed for moral support. Everyone at minecraftforge.net for helping. Special thanks to McJty for being awesome!",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

@@ -1,20 +1,20 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "triggers:basictrigger",
     "textures": {
       "sides": "triggers:blocks/barrier"
-    }
+    },
+    "model": "triggers:basictrigger"
   },
   "variants": {
     "normal": [{}],
     "inventory": [{}],
     "visible": {
-      "true": {},
+      "true": {
+
+      },
       "false": {
-        "textures": {
-          "sides": "triggers:blocks/blank"
-        }
+
       }
     }
   }
